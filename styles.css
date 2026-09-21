@@ -166,10 +166,12 @@ h1,h2,h3{ font-family: var(--font-display); font-weight: 500; color: var(--espre
 .mobile-drawer .drawer-foot a{ display:flex; align-items:center; gap: var(--sp-3); }
 
 /* ---------- Hero ---------- */
-.hero{ position:relative; min-height: 100svh; display:flex; align-items:flex-end; color: var(--ivory-on-noir); overflow:hidden; }
+.hero{ position:relative; min-height: 100vh; min-height: 100svh; display:flex; align-items:flex-end; color: var(--ivory-on-noir); overflow:hidden; }
 .hero-media{ position:absolute; inset:0; z-index:0; }
 .hero-media img{ width:100%; height:100%; object-fit:cover; }
-.hero-media::after{ content:""; position:absolute; inset:0; background: linear-gradient(185deg, rgba(20,15,9,0.35) 0%, rgba(20,15,9,0.28) 40%, rgba(15,11,7,0.86) 100%); }
+.hero-media::after{ content:""; position:absolute; inset:0; background:
+    linear-gradient(100deg, rgba(15,11,7,0.82) 0%, rgba(15,11,7,0.58) 32%, rgba(15,11,7,0.18) 60%, rgba(15,11,7,0.08) 100%),
+    linear-gradient(185deg, rgba(20,15,9,0.15) 0%, rgba(20,15,9,0.22) 45%, rgba(15,11,7,0.9) 100%); }
 .hero-body{ position:relative; z-index:1; width:100%; padding-block: calc(var(--sp-9) + 3rem) var(--sp-7); }
 .hero-eyebrow{ font-size: var(--fs-label); letter-spacing:0.24em; text-transform:uppercase; color: var(--gold-light); font-weight:600; }
 .hero h1{ font-size: var(--fs-hero); color: var(--ivory-on-noir); margin-top: var(--sp-4); max-width: 20ch; line-height:1.04; }
@@ -321,9 +323,12 @@ h1,h2,h3{ font-family: var(--font-display); font-weight: 500; color: var(--espre
 .footer-social a{ width:2.2rem; height:2.2rem; border:1px solid var(--noir-line); border-radius:50%; display:flex; align-items:center; justify-content:center; }
 .footer-bottom{ margin-top: var(--sp-8); padding-top: var(--sp-5); border-top:1px solid var(--noir-line); display:flex; flex-wrap:wrap; gap: var(--sp-4); justify-content:space-between; font-size: var(--fs-label); color: rgba(243,236,221,0.5); }
 
-/* ---------- Reveal on scroll ---------- */
-[data-reveal]{ opacity:0; transform: translateY(18px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
-[data-reveal].is-visible{ opacity:1; transform:none; }
+/* ---------- Reveal on scroll ----------
+   Visible by default (no JS dependency). The hidden/fade-in state only
+   exists once JS adds .js-reveal to <html>, so a slow or broken script
+   can never leave content stuck invisible — see script.js. */
+.js-reveal [data-reveal]{ opacity:0; transform: translateY(18px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+.js-reveal [data-reveal].is-visible{ opacity:1; transform:none; }
 
 /* ---------- Page hero (interior pages, shorter) ---------- */
 .page-hero{ padding-block: calc(var(--sp-9) + 2rem) var(--sp-8); background: var(--stone); border-bottom:1px solid var(--line); }

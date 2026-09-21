@@ -34,12 +34,14 @@
   document.addEventListener('keydown', function(ev){ if (ev.key === 'Escape') closeDrawer(); });
   document.querySelectorAll('.mobile-drawer nav a').forEach(function(a){ a.addEventListener('click', closeDrawer); });
 
-  // Reveal on scroll
+  // Reveal on scroll — content is visible by default in CSS; this only
+  // ever ADDS a hidden-then-fade-in state once JS proves it can deliver
+  // it, so a slow/blocked/erroring script can never leave content stuck
+  // invisible. A hard timeout is a second safety net on top of that.
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var revealEls = document.querySelectorAll('[data-reveal]');
-  if (reduceMotion || !('IntersectionObserver' in window)) {
-    revealEls.forEach(function(el){ el.classList.add('is-visible'); });
-  } else {
+  if (!reduceMotion && 'IntersectionObserver' in window && revealEls.length) {
+    document.documentElement.classList.add('js-reveal');
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
         if (entry.isIntersecting) {
@@ -52,6 +54,9 @@
       el.style.transitionDelay = (Math.min(i % 4, 3) * 90) + 'ms';
       io.observe(el);
     });
+    setTimeout(function(){
+      revealEls.forEach(function(el){ el.classList.add('is-visible'); });
+    }, 4000);
   }
 
   // Before / after compare slider
