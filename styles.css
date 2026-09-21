@@ -195,32 +195,22 @@ h1 em, .hero h1 em{ font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1; }
 .mobile-drawer .drawer-foot a{ display:flex; align-items:center; gap: var(--sp-3); }
 .mobile-drawer .drawer-foot a:hover{ color: var(--gold-light); }
 
-/* ---------- Hero ----------
-   An editorial split, not a photo-with-caption: a solid ink panel
-   carries the whole message, a full-bleed photo runs alongside it
-   uninterrupted (no text ever sits on the image, so the photography
-   stays clean and doesn't need to fight a dark scrim for legibility). */
-.hero{ position:relative; min-height: 100vh; min-height: 100svh; display:grid; grid-template-rows: auto 1fr; color: var(--ivory-on-noir); overflow:hidden; }
-.hero::before{ content:""; position:absolute; top:0; left:0; right:0; height:190px; background: linear-gradient(180deg, rgba(10,7,4,0.6), transparent); z-index:5; pointer-events:none; }
-@media (min-width: 900px){ .hero{ grid-template-columns: minmax(360px, 44%) 1fr; grid-template-rows: 1fr; } }
-
-.hero-panel{ position:relative; order:2; background: var(--noir); display:flex; flex-direction:column; justify-content:flex-end; padding: calc(var(--sp-9) + 2.5rem) var(--sp-5) var(--sp-8); }
-@media (min-width: 900px){ .hero-panel{ order:1; justify-content:center; padding: calc(var(--sp-9) + 1.5rem) var(--sp-7) var(--sp-8) var(--sp-7); } }
-
-.hero-media{ position:relative; order:1; min-height:44vh; overflow:hidden; }
-@media (min-width: 900px){ .hero-media{ order:2; min-height:auto; } }
-.hero-media img{ width:100%; height:100%; object-fit:cover; display:block; }
-.hero-media::after{ content:""; position:absolute; inset:0; background: linear-gradient(200deg, transparent 60%, rgba(15,11,7,0.5) 100%); }
-@media (min-width: 900px){ .hero-media::after{ background: linear-gradient(100deg, rgba(15,11,7,0.4), transparent 22%); } }
-
+/* ---------- Hero ---------- */
+.hero{ position:relative; min-height: 100vh; min-height: 100svh; display:flex; align-items:flex-end; color: var(--ivory-on-noir); overflow:hidden; }
+.hero-media{ position:absolute; inset:0; z-index:0; }
+.hero-media img{ width:100%; height:100%; object-fit:cover; }
+.hero-media::after{ content:""; position:absolute; inset:0; background:
+    linear-gradient(100deg, rgba(15,11,7,0.82) 0%, rgba(15,11,7,0.58) 32%, rgba(15,11,7,0.18) 60%, rgba(15,11,7,0.08) 100%),
+    linear-gradient(185deg, rgba(20,15,9,0.15) 0%, rgba(20,15,9,0.22) 45%, rgba(15,11,7,0.9) 100%); }
+.hero-body{ position:relative; z-index:1; width:100%; padding-block: calc(var(--sp-9) + 3rem) var(--sp-7); }
 .hero-eyebrow{ font-size: var(--fs-label); letter-spacing:0.24em; text-transform:uppercase; color: var(--gold-light); font-weight:600; }
-.hero h1{ font-size: clamp(2.5rem, 1.7rem + 3.4vw, 4.6rem); color: var(--ivory-on-noir); margin-top: var(--sp-4); line-height:1.04; }
+.hero h1{ font-size: var(--fs-hero); color: var(--ivory-on-noir); margin-top: var(--sp-4); max-width: 20ch; line-height:1.04; }
 .hero h1 em{ font-style: italic; font-weight:400; color: var(--gold-light); }
-.hero-sub{ font-size: var(--fs-lead); color: rgba(243,236,221,0.82); margin-top: var(--sp-5); }
+.hero-sub{ font-size: var(--fs-lead); color: rgba(243,236,221,0.82); max-width: 34rem; margin-top: var(--sp-5); }
 .hero-actions{ display:flex; flex-wrap:wrap; gap: var(--sp-4); margin-top: var(--sp-6); }
 
 /* Material swatch key — literal brand palette as content */
-.swatch-key{ display:flex; flex-wrap:wrap; gap: var(--sp-5) var(--sp-6); margin-top: var(--sp-8); padding-top: var(--sp-6); border-top: 1px solid var(--noir-line); }
+.swatch-key{ display:flex; flex-wrap:wrap; gap: var(--sp-6); margin-top: var(--sp-8); padding-top: var(--sp-6); border-top: 1px solid var(--noir-line); }
 .swatch{ display:flex; align-items:center; gap: var(--sp-3); font-size: var(--fs-small); color: rgba(243,236,221,0.85); }
 .swatch-chip{ width: 2.1rem; height: 2.1rem; border-radius:50%; border: 1px solid rgba(243,236,221,0.35); flex-shrink:0; }
 .swatch-chip--ivory{ background: linear-gradient(135deg, #F6F0E3, #D8CBA9); }
@@ -235,12 +225,19 @@ h1 em, .hero h1 em{ font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1; }
 .hallmark::before, .hallmark::after{ content:""; flex:1; height:1px; background: currentColor; opacity:0.4; }
 .hallmark-mark{ width:2.1rem; height:2.1rem; border:1px solid currentColor; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family: var(--font-display); font-size:0.72rem; flex-shrink:0; }
 
-/* ---------- Highlights strip ---------- */
-.highlights{ display:grid; gap: var(--sp-6); grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); padding-block: var(--sp-7); border-block: 1px solid var(--line); }
-.highlight{ display:flex; gap: var(--sp-4); align-items:flex-start; }
-.highlight-icon{ width:2.6rem; height:2.6rem; border-radius:50%; background: var(--gold-pale); color: var(--gold-deep); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1.1rem; }
-.highlight h3{ font-size:1rem; font-family: var(--font-body); font-weight:600; }
-.highlight p{ color: var(--espresso-soft); font-size: var(--fs-small); margin-top:2px; }
+/* ---------- Credentials strip ----------
+   No icon-in-a-circle grid — a ledger-style row of hairline-divided
+   facts, the same divider language as the rest of the site. */
+.creds-strip{ display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); padding-block: var(--sp-7); border-block: 1px solid var(--line); }
+.creds-item{ border-left: 1px solid var(--line); padding: 0 var(--sp-6); }
+.creds-item:first-child{ border-left:none; padding-left:0; }
+.creds-item h3{ font-family: var(--font-body); font-size: 0.72rem; letter-spacing:0.12em; text-transform:uppercase; font-weight:700; color: var(--gold-deep); }
+.creds-item p{ margin-top: var(--sp-3); color: var(--espresso-soft); font-size: var(--fs-small); line-height:1.55; }
+@media (max-width: 700px){
+  .creds-strip{ grid-template-columns:1fr; }
+  .creds-item{ border-left:none; padding-inline:0; border-top:1px solid var(--line); padding-top: var(--sp-5); margin-top: var(--sp-5); }
+  .creds-item:first-child{ border-top:none; padding-top:0; margin-top:0; }
+}
 
 /* ---------- Ledger list (services catalog) ---------- */
 .ledger{ display:flex; flex-direction:column; }
