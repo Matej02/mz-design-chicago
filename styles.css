@@ -49,7 +49,7 @@
   --fs-label: 0.78rem;
 
   --sp-1: 0.25rem; --sp-2: 0.5rem; --sp-3: 0.75rem; --sp-4: 1rem;
-  --sp-5: 1.5rem; --sp-6: 2.25rem; --sp-7: 3.5rem; --sp-8: 5rem; --sp-9: 7.5rem;
+  --sp-5: 1.5rem; --sp-6: 2.5rem; --sp-7: clamp(3.5rem, 3rem + 2vw, 5rem); --sp-8: clamp(5rem, 4rem + 4vw, 8rem); --sp-9: clamp(7rem, 5.5rem + 6vw, 11rem);
 
   --radius-sm: 2px;
   --radius-md: 3px;
@@ -255,6 +255,15 @@ h1 em, .hero h1 em{ font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1; }
 .tile-cap .eyebrow{ color: var(--gold-light); }
 .tile-cap h3{ color:#fff; font-size:1.1rem; margin-top: var(--sp-1); }
 
+/* Editorial mosaic — a gallery wall, not a uniform card grid. Column
+   width varies (mosaic-wide spans two columns); each tile's own
+   aspect-ratio does the rest, so nothing needs manual row-spanning. */
+.mosaic{ display:grid; grid-template-columns: repeat(3, 1fr); grid-auto-flow: row dense; gap: var(--sp-5); }
+.mosaic .tile{ margin:0; }
+.mosaic .mosaic-wide{ grid-column: span 2; }
+@media (max-width: 760px){ .mosaic{ grid-template-columns: 1fr 1fr; gap: var(--sp-3); } .mosaic .mosaic-wide{ grid-column: span 2; } }
+@media (max-width: 520px){ .mosaic{ grid-template-columns: 1fr; } .mosaic .mosaic-wide{ grid-column: span 1; } }
+
 /* ---------- Originals (dark gallery cards) ---------- */
 .original-card{ display:grid; gap: var(--sp-6); grid-template-columns: 1.1fr 1fr; align-items:center; padding-block: var(--sp-8); border-top: 1px solid var(--noir-line); }
 .original-card:last-of-type{ border-bottom: 1px solid var(--noir-line); }
@@ -336,7 +345,7 @@ h1 em, .hero h1 em{ font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1; }
    Visible by default (no JS dependency). The hidden/fade-in state only
    exists once JS adds .js-reveal to <html>, so a slow or broken script
    can never leave content stuck invisible — see script.js. */
-.js-reveal [data-reveal]{ opacity:0; transform: translateY(18px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+.js-reveal [data-reveal]{ opacity:0; transform: translateY(26px) scale(.98); transition: opacity 1.1s var(--ease), transform 1.1s var(--ease); }
 .js-reveal [data-reveal].is-visible{ opacity:1; transform:none; }
 
 /* ---------- Page hero (interior pages, shorter) ---------- */
