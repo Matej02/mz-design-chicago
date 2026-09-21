@@ -21,7 +21,7 @@
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=202609212008">
 <noscript><style>[data-reveal]{opacity:1!important;transform:none!important;}</style></noscript>
 <script type="application/ld+json">
 {
@@ -136,18 +136,18 @@
 
   <section class="section">
     <div class="container">
-      <div class="grid grid-2" style="align-items:center; grid-template-columns: 1fr 1fr;">
+      <div class="split">
         <div data-reveal>
           <p class="eyebrow">The M&amp;Z Approach</p>
-          <h2 style="font-size:var(--fs-h2); margin-top:var(--sp-3);">Beautiful ideas, practically built.</h2>
-          <p class="lead" style="margin-top:var(--sp-5);">We unite interior design with trusted construction coordination, so the vision and the build speak the same language. From bathrooms and kitchens to complete outdoor retreats, M&amp;Z creates tailored spaces around the way you live — selecting materials strategically, designing memorable custom moments, and coordinating licensed, insured plumbing and electrical professionals whenever a project calls for it.</p>
-          <div style="margin-top:var(--sp-6); padding:var(--sp-5) var(--sp-6); border:1px solid var(--line-strong); border-radius:var(--radius-md); background:var(--ivory-raised); display:inline-block;">
-            <strong style="font-family:var(--font-display); font-size:2.2rem; color:var(--gold-deep);">Up to 40%</strong>
-            <p style="margin-top:var(--sp-2); color:var(--espresso-soft); font-size:var(--fs-small); max-width:26rem;">potential savings compared with traditional full-service remodeling — depending on project scope, material selections, and trade requirements.</p>
+          <h2>Beautiful ideas, practically built.</h2>
+          <p class="lead">We unite interior design with trusted construction coordination, so the vision and the build speak the same language. From bathrooms and kitchens to complete outdoor retreats, M&amp;Z creates tailored spaces around the way you live — selecting materials strategically, designing memorable custom moments, and coordinating licensed, insured plumbing and electrical professionals whenever a project calls for it.</p>
+          <div class="stat-card">
+            <strong class="stat-card__value">Up to 40%</strong>
+            <p>potential savings compared with traditional full-service remodeling — depending on project scope, material selections, and trade requirements.</p>
           </div>
         </div>
         <div class="tile" data-reveal>
-          <div class="frame" style="aspect-ratio:4/5;">
+          <div class="frame ar-4x5">
             <img src="assets/img/office.jpg" width="1536" height="1024" alt="Walnut executive desk with a Chicago skyline view, designed by M&amp;Z" loading="lazy" decoding="async">
           </div>
         </div>
@@ -182,7 +182,7 @@
           <p>Seasonal and event styling, custom handmade details, and a connected path to qualified trade professionals.</p>
         </div>
       </div>
-      <a class="btn btn-ghost" href="/services" style="margin-top:var(--sp-7);">See all services <svg><use href="assets/icons.svg#icon-arrow"></use></svg></a>
+      <a class="btn btn-ghost" href="/services">See all services <svg><use href="assets/icons.svg#icon-arrow"></use></svg></a>
     </div>
   </section>
 
@@ -193,37 +193,41 @@
         <h2>Spaces with presence.</h2>
         <p class="lead">Warm natural materials, architectural lighting, and expressive details define the M&amp;Z signature.</p>
       </div>
-      <div class="grid grid-3">
-        <figure class="room-card" data-reveal>
-          <div class="frame"><img src="assets/img/kitchen.jpg" width="1536" height="1024" alt="Marble waterfall kitchen island with walnut base and brass pendant lighting" loading="lazy" decoding="async"></div>
-          <figcaption><h3>Tailored Kitchen</h3><p>Cabinetry · Surfaces · Lighting</p></figcaption>
+      <div class="mosaic">
+        <figure class="tile mosaic-wide" data-reveal>
+          <div class="frame ar-16x10"><img src="assets/img/kitchen.jpg" width="1536" height="1024" alt="Marble waterfall kitchen island with walnut base and brass pendant lighting" loading="lazy" decoding="async"></div>
+          <figcaption class="tile-cap"><h3>Tailored Kitchen</h3><p>Cabinetry · Surfaces · Lighting</p></figcaption>
         </figure>
-        <figure class="room-card" data-reveal>
-          <div class="frame"><img src="assets/img/bath-skyline.jpg" width="1600" height="900" alt="Primary bath with freestanding tub facing the Chicago skyline" loading="lazy" decoding="async"></div>
-          <figcaption><h3>Skyline Bath</h3><p>Ivory stone · Walnut · Champagne gold</p></figcaption>
+        <figure class="tile" data-reveal>
+          <div class="frame ar-4x5"><img src="assets/img/bath-skyline.jpg" width="1600" height="900" alt="Primary bath with freestanding tub facing the Chicago skyline" loading="lazy" decoding="async"></div>
+          <figcaption class="tile-cap"><h3>Skyline Bath</h3><p>Ivory stone · Walnut · Champagne gold</p></figcaption>
         </figure>
-        <figure class="room-card" data-reveal>
-          <div class="frame"><img src="assets/img/living-room.jpg" width="1536" height="1024" alt="Cream sectional living room with a hanging bubble chair and gold pendant lamp" loading="lazy" decoding="async"></div>
-          <figcaption><h3>Modern Living Room</h3><p>Comfort · Light · Flow</p></figcaption>
+        <figure class="tile mosaic-wide" data-reveal>
+          <div class="frame ar-16x9"><img src="assets/img/living-room.jpg" width="1536" height="1024" alt="Cream sectional living room with a hanging bubble chair and gold pendant lamp" loading="lazy" decoding="async"></div>
+          <figcaption class="tile-cap"><h3>Modern Living Room</h3><p>Comfort · Light · Flow</p></figcaption>
+        </figure>
+        <figure class="tile" data-reveal>
+          <div class="frame ar-1x1"><img src="assets/img/patio-resort.jpg" width="709" height="1536" alt="Night-lit resort-style patio lounge designed by M&amp;Z" loading="lazy" decoding="async"></div>
+          <figcaption class="tile-cap"><h3>Private Resort Patio</h3><p>Outdoor living</p></figcaption>
         </figure>
       </div>
-      <a class="btn btn-ghost" href="/portfolio" style="margin-top:var(--sp-7);">Explore the full portfolio <svg><use href="assets/icons.svg#icon-arrow"></use></svg></a>
+      <a class="btn btn-ghost" href="/portfolio">Explore the full portfolio <svg><use href="assets/icons.svg#icon-arrow"></use></svg></a>
     </div>
   </section>
 
   <section class="section section--noir">
     <div class="container">
-      <div class="grid grid-2" style="align-items:center; grid-template-columns: 1fr 1fr;">
+      <div class="split">
         <div class="tile" data-reveal>
-          <div class="frame" style="aspect-ratio:4/5;">
+          <div class="frame ar-4x5">
             <img src="assets/img/original-waterfall-chair.jpg" width="1536" height="1213" alt="The Musical Waterfall Chair — an illuminated sculptural chair with an integrated waterfall" loading="lazy" decoding="async">
           </div>
         </div>
         <div data-reveal>
           <p class="eyebrow">M&amp;Z Original</p>
-          <h2 style="font-size:var(--fs-h2); margin-top:var(--sp-3);">Design you can take home.</h2>
-          <p class="lead" style="margin-top:var(--sp-5);">Beyond rooms, M&amp;Z hand-makes sculptural, functional art — from a chair with a built-in waterfall that responds to music, to illuminated vessels carved from concrete and branch. Every piece is finished with a signature brushed-gold M&amp;Z maker's plaque.</p>
-          <a class="btn btn-outline" href="/originals" style="margin-top:var(--sp-6);">View Signature Originals</a>
+          <h2>Design you can take home.</h2>
+          <p class="lead">Beyond rooms, M&amp;Z hand-makes sculptural, functional art — from a chair with a built-in waterfall that responds to music, to illuminated vessels carved from concrete and branch. Every piece is finished with a signature brushed-gold M&amp;Z maker's plaque.</p>
+          <a class="btn btn-outline" href="/originals">View Signature Originals</a>
         </div>
       </div>
     </div>
@@ -231,15 +235,15 @@
 
   <section class="section">
     <div class="container">
-      <div class="grid grid-2" style="align-items:center; grid-template-columns: 1fr 1fr;">
+      <div class="split">
         <div data-reveal>
           <p class="eyebrow">Celebrations &amp; Seasonal Styling</p>
-          <h2 style="font-size:var(--fs-h2); margin-top:var(--sp-3);">Beautiful moments, designed for you.</h2>
-          <p class="lead" style="margin-top:var(--sp-5);">Custom décor for Christmas, Easter, fall gatherings, birthdays, anniversaries, showers, weddings, and other special occasions — from a single statement table to a fully dressed room.</p>
-          <a class="btn btn-outline" href="/celebrations" style="margin-top:var(--sp-6);">See celebration styling</a>
+          <h2>Beautiful moments, designed for you.</h2>
+          <p class="lead">Custom décor for Christmas, Easter, fall gatherings, birthdays, anniversaries, showers, weddings, and other special occasions — from a single statement table to a fully dressed room.</p>
+          <a class="btn btn-outline" href="/celebrations">See celebration styling</a>
         </div>
         <div class="tile" data-reveal>
-          <div class="frame" style="aspect-ratio:4/5;">
+          <div class="frame ar-4x5">
             <img src="assets/img/celebration-wedding-table.jpg" width="1536" height="1024" alt="Elegant wedding tablescape in navy, ivory and gold beneath a candlelit chandelier" loading="lazy" decoding="async">
           </div>
         </div>
@@ -303,6 +307,6 @@
   </div>
 </footer>
 
-<script src="script.js" defer></script>
+<script src="script.js?v=202609212008" defer></script>
 </body>
 </html>

@@ -19,10 +19,10 @@
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=202609212008">
 <noscript><style>[data-reveal]{opacity:1!important;transform:none!important;}</style></noscript>
 </head>
-<body style="background:var(--noir);">
+<body class="body-noir">
 <a class="skip-link" href="#main">Skip to content</a>
 
 <header class="site-header is-dark-hero" id="siteHeader">
@@ -75,12 +75,12 @@
 
 <main id="main">
 
-  <section class="section--noir" style="padding-block: calc(var(--sp-9) + 2rem) var(--sp-8); border-bottom:1px solid var(--noir-line);">
+  <section class="page-hero page-hero--noir section--noir">
     <div class="container">
-      <p class="breadcrumb" style="color:rgba(243,236,221,0.55);"><a href="/" style="color:rgba(243,236,221,0.8);">Home</a> / Signature Originals</p>
+      <p class="breadcrumb"><a href="/">Home</a> / Signature Originals</p>
       <p class="eyebrow">M&amp;Z Original</p>
-      <h1 style="font-size:var(--fs-h1); margin-top:var(--sp-3); max-width:28ch;">Ideas shaped into experience.</h1>
-      <p class="lead" style="margin-top:var(--sp-4); max-width:40rem;">M&amp;Z Design explores more than rooms. These original concepts combine sculptural form, light, water, and responsive technology — objects that change how a space feels, each finished with a signature brushed-gold M&amp;Z maker's plaque.</p>
+      <h1>Ideas shaped into experience.</h1>
+      <p class="lead">M&amp;Z Design explores more than rooms. These original concepts combine sculptural form, light, water, and responsive technology — objects that change how a space feels, each finished with a signature brushed-gold M&amp;Z maker's plaque.</p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="/contact">Commission an Original</a>
         <a class="btn btn-outline" href="/portfolio">See Rooms It's Made For</a>
@@ -92,7 +92,7 @@
     <div class="container">
 
       <div class="original-card" data-reveal>
-        <div>
+        <div class="original-copy">
           <span class="index">01 / Connected Living</span>
           <h3>The Musical Waterfall Chair</h3>
           <p>A one-of-a-kind sculptural chair envisioned with an integrated waterfall. Connected by Wi-Fi and Bluetooth, the water feature responds when music plays from your phone — turning sound, movement, and light into a calming sensory experience.</p>
@@ -104,7 +104,7 @@
       </div>
 
       <div class="original-card is-reverse" data-reveal>
-        <div>
+        <div class="original-copy">
           <span class="index">02 / Outdoor Living Art</span>
           <h3>Nature in a New Form</h3>
           <p>An illuminated sculptural vessel combined with natural branches — a functional outdoor art piece built around concrete, nature, light, and harmony.</p>
@@ -116,7 +116,7 @@
       </div>
 
       <div class="original-card" data-reveal>
-        <div>
+        <div class="original-copy">
           <span class="index">03 / Functional Art</span>
           <h3>The Branch Light</h3>
           <p>A one-of-a-kind illuminated natural-branch towel holder — function reimagined as sculpture, warm-lit from within against a hand-textured wall.</p>
@@ -127,16 +127,16 @@
         </div>
       </div>
 
-      <div style="padding-block: var(--sp-8); border-top: 1px solid var(--noir-line);" data-reveal>
+      <div class="flow-block" data-reveal>
         <span class="index">04 / From Inspiration to Invention</span>
-        <h3 style="font-size:var(--fs-h2); margin-top:var(--sp-3);">A Light Becomes a Chair</h3>
-        <p style="color:rgba(243,236,221,0.78); margin-top:var(--sp-4); max-width:38rem;">The fluid transparency of this glass pendant became the starting point for an entirely new seating concept. M&amp;Z translated its luminous, teardrop form into sculptural furniture — weightless in appearance, built to be an everyday centerpiece.</p>
-        <div style="display:flex; align-items:center; gap:var(--sp-6); margin-top:var(--sp-7); flex-wrap:wrap;">
-          <div class="frame" style="width:min(280px,100%); aspect-ratio:4/5; border-radius:var(--radius-md); overflow:hidden;">
+        <h3 class="flow-title">A Light Becomes a Chair</h3>
+        <p>The fluid transparency of this glass pendant became the starting point for an entirely new seating concept. M&amp;Z translated its luminous, teardrop form into sculptural furniture — weightless in appearance, built to be an everyday centerpiece.</p>
+        <div class="flow">
+          <div class="frame ar-4x5">
             <img src="assets/img/inspiration-pendant-light.jpg" width="1024" height="1536" alt="The original glass pendant light that inspired the chair's teardrop form" loading="lazy" decoding="async">
           </div>
-          <svg style="width:2.4rem; height:2.4rem; color:var(--gold-light); flex-shrink:0;"><use href="assets/icons.svg#icon-arrow"></use></svg>
-          <div class="frame" style="width:min(280px,100%); aspect-ratio:4/5; border-radius:var(--radius-md); overflow:hidden;">
+          <svg class="flow-arrow"><use href="assets/icons.svg#icon-arrow"></use></svg>
+          <div class="frame ar-4x5">
             <img src="assets/img/original-glass-chair.jpg" width="1229" height="1536" alt="The resulting Transparent Sculptural Chair, translated from the pendant's teardrop form" loading="lazy" decoding="async">
           </div>
         </div>
@@ -145,11 +145,11 @@
     </div>
   </section>
 
-  <section class="section section--noir" style="border-top:1px solid var(--noir-line);">
-    <div class="container text-center" style="max-width:40rem; margin-inline:auto;" data-reveal>
-      <p class="eyebrow" style="justify-content:center;">The Signature</p>
-      <h2 style="margin-top:var(--sp-3);">A mark made to last.</h2>
-      <div style="width:6rem; height:6rem; border-radius:50%; border:1px solid var(--gold-light); display:flex; align-items:center; justify-content:center; margin:var(--sp-7) auto; font-family:var(--font-display); color:var(--gold-light); font-size:1.1rem;">M&amp;Z</div>
+  <section class="section section--noir has-top-rule">
+    <div class="container text-center measure-center" data-reveal>
+      <p class="eyebrow eyebrow--center">The Signature</p>
+      <h2>A mark made to last.</h2>
+      <div class="signature-mark">M&amp;Z</div>
       <p class="lead">Original M&amp;Z pieces are finished with a brushed-gold maker's plaque in durable 316L stainless steel with a PVD gold finish — designed to hold its shine in distinctive indoor and outdoor settings alike.</p>
     </div>
   </section>
@@ -210,6 +210,6 @@
   </div>
 </footer>
 
-<script src="script.js" defer></script>
+<script src="script.js?v=202609212008" defer></script>
 </body>
 </html>

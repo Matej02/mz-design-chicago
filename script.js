@@ -50,13 +50,34 @@
         }
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
-    revealEls.forEach(function(el, i){
-      el.style.transitionDelay = (Math.min(i % 4, 3) * 90) + 'ms';
+    // Stagger among siblings that share a parent, so a grid of cards cascades
+    // but unrelated sections further down the page never inherit a delay.
+    var seen = new Map();
+    revealEls.forEach(function(el){
+      var n = seen.get(el.parentNode) || 0;
+      seen.set(el.parentNode, n + 1);
+      el.style.transitionDelay = Math.min(n, 5) * 80 + 'ms';
       io.observe(el);
     });
     setTimeout(function(){
       revealEls.forEach(function(el){ el.classList.add('is-visible'); });
     }, 4000);
+  }
+
+  // Hero parallax — the photograph drifts slower than the page. rAF-throttled,
+  // and capped at one viewport so it never detaches from the hero's bounds.
+  var heroImg = document.querySelector('.hero-media img');
+  if (heroImg && !reduceMotion) {
+    var ticking = false;
+    window.addEventListener('scroll', function(){
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function(){
+        var y = Math.min(window.scrollY, window.innerHeight);
+        heroImg.style.translate = '0 ' + (y * 0.18).toFixed(1) + 'px';
+        ticking = false;
+      });
+    }, { passive: true });
   }
 
   // Before / after compare slider
