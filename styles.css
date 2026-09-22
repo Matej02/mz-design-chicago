@@ -21,7 +21,7 @@
 
   --espresso: #241B12;
   --espresso-soft: #5B4E3E;
-  --espresso-faint: #8C7F6A;
+  --espresso-faint: #756A58; /* WCAG AA: 4.67:1 on --ivory (was 3.45:1) */
 
   --walnut: #6B4426;
   --walnut-deep: #432A16;
