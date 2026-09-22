@@ -11,7 +11,7 @@
      so spacing stays consistent without inline overrides.
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,100..900,0..100,0..1;1,9..144,100..900,0..100,0..1&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
 
 /* ---------- Tokens ---------- */
 :root{
@@ -38,7 +38,7 @@
   --line: rgba(36,27,18,0.13);
   --line-strong: rgba(36,27,18,0.26);
 
-  --font-display: 'Fraunces', serif;
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --font-body: 'Work Sans', sans-serif;
 
   /* Type scale — wide dynamic range: big display, small labels. */
@@ -97,15 +97,14 @@ svg{ width:1em; height:1em; }
 
 /* ---------- Typography ---------- */
 h1,h2,h3{
-  font-family: var(--font-display); font-weight:500; color: var(--espresso);
-  line-height:1.06; letter-spacing:-0.02em;
-  font-variation-settings:'opsz' 60,'SOFT' 40,'WONK' 0;
+  font-family: var(--font-display); font-weight:600; color: var(--espresso);
+  line-height:1.08; letter-spacing:-0.008em;
   text-wrap: balance;
 }
-h1{ font-size: var(--fs-h1); letter-spacing:-0.028em; font-variation-settings:'opsz' 144,'SOFT' 72,'WONK' 1; }
-h2{ font-size: var(--fs-h2); letter-spacing:-0.024em; font-variation-settings:'opsz' 120,'SOFT' 64,'WONK' 1; }
+h1{ font-size: var(--fs-h1); letter-spacing:-0.012em; }
+h2{ font-size: var(--fs-h2); letter-spacing:-0.01em; }
 h3{ font-size: var(--fs-h3); }
-em{ font-style:italic; font-variation-settings:'opsz' 144,'SOFT' 100,'WONK' 1; }
+em{ font-style:italic; font-weight:400; }
 .section--noir h1, .section--noir h2, .section--noir h3{ color: var(--ivory-on-noir); }
 
 p{ text-wrap: pretty; }
@@ -237,7 +236,7 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 }
 .hero-body{ position:relative; z-index:1; width:100%; padding-block: calc(var(--sp-7) + 4rem) var(--sp-7); }
 .hero-eyebrow{ font-size: var(--fs-label); letter-spacing:0.22em; text-transform:uppercase; color: var(--gold-light); font-weight:600; }
-.hero h1{ font-size: var(--fs-hero); color:#fff; margin-top: var(--sp-4); max-width:17ch; line-height:0.98; letter-spacing:-0.035em; }
+.hero h1{ font-size: var(--fs-hero); color:#fff; font-weight:600; margin-top: var(--sp-4); max-width:17ch; line-height:1.0; letter-spacing:-0.015em; }
 .hero h1 em{ color: var(--gold-light); }
 .hero-sub{ font-size: var(--fs-lead); color: rgba(243,236,221,0.85); max-width:44rem; margin-top: var(--sp-5); line-height:1.5; }
 .hero-actions{ display:flex; flex-wrap:wrap; gap: var(--sp-4); margin-top: var(--sp-6); }
@@ -368,8 +367,28 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 
 /* ---------- Stat ---------- */
 .stat-card{ display:inline-block; margin-top: var(--sp-6); padding: var(--sp-5) var(--sp-6); border:1px solid var(--line-strong); background: var(--ivory-raised); }
-.stat-card__value{ display:block; font-family: var(--font-display); font-size: clamp(2.5rem,2rem+2vw,3.5rem); line-height:1; letter-spacing:-0.03em; color: var(--gold-deep); font-variation-settings:'opsz' 144,'SOFT' 70,'WONK' 1; }
-.stat-card p{ margin-top: var(--sp-3); font-size: var(--fs-small); color: var(--espresso-soft); max-width:28rem; }
+.stat-card__value{ display:block; font-family: var(--font-display); font-size: clamp(2.5rem,2rem+2vw,3.5rem); line-height:1; letter-spacing:-0.03em; color: var(--gold-deep); }
+.stat-card p{ margin-top: var(--sp-3); font-size: var(--fs-small); color: var(--espresso-soft); max-width:30rem; }
+.stat-card__lead{ font-family: var(--font-display); font-size:1.35rem !important; color: var(--espresso) !important; margin-top: var(--sp-2) !important; }
+.stat-card__note{ font-size: var(--fs-label) !important; color: var(--espresso-faint) !important; border-top:1px solid var(--line); padding-top: var(--sp-3); }
+
+/* Image provenance labels — a completed project, a visualization and an
+   original concept are different claims and are never shown as the same thing. */
+.tile-tag{ position:absolute; top: var(--sp-4); left: var(--sp-4); z-index:2;
+  padding:.4em .9em; border-radius: var(--radius-pill);
+  background: rgba(20,15,9,.72); backdrop-filter: blur(8px);
+  color:#fff; font-size:.7rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; }
+.tile-tag--concept{ background: rgba(134,102,47,.85); }
+
+/* Designer intro */
+.designer{ display:grid; gap: var(--sp-7); grid-template-columns:1fr; align-items:center; }
+@media (min-width: 900px){ .designer{ grid-template-columns: 0.8fr 1fr; gap: var(--sp-8); } }
+.designer .frame{ background: var(--stone); }
+.designer-placeholder{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap: var(--sp-3);
+  height:100%; min-height:22rem; border:1px dashed var(--line-strong); color: var(--espresso-faint);
+  text-align:center; padding: var(--sp-6); font-size: var(--fs-small); }
+.designer-placeholder strong{ font-family: var(--font-display); font-size:1.3rem; color: var(--espresso-soft); }
+.designer-quote{ font-family: var(--font-display); font-size: var(--fs-h3); font-style:italic; color: var(--espresso-soft); margin-top: var(--sp-5); }
 
 /* ---------- Before / after ---------- */
 .compare{ position:relative; aspect-ratio:16/10; overflow:hidden; user-select:none; }
