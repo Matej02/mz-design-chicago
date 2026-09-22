@@ -502,6 +502,22 @@ body.body-noir{ background: var(--noir); }
 .flow-block{ padding-block: var(--sp-8); border-top:1px solid var(--noir-line); }
 .flow-title{ font-size: var(--fs-h2); margin-top: var(--sp-4); }
 
+/* ---------- FAQ ----------
+   Native <details>: keyboard-accessible and works with JS disabled. */
+.faq{ border-top:1px solid var(--line); }
+.faq details{ border-bottom:1px solid var(--line); }
+.faq summary{ display:flex; align-items:flex-start; justify-content:space-between; gap: var(--sp-5);
+  padding-block: var(--sp-5); cursor:pointer; list-style:none;
+  font-family: var(--font-display); font-size: var(--fs-h3); color: var(--espresso);
+  transition: color .35s var(--ease); }
+.faq summary::-webkit-details-marker{ display:none; }
+.faq summary:hover{ color: var(--gold-deep); }
+.faq summary::after{ content:"+"; font-family: var(--font-body); font-size:1.5rem; line-height:1;
+  color: var(--gold-deep); flex-shrink:0; transition: transform .35s var(--ease); }
+.faq details[open] summary::after{ transform: rotate(45deg); }
+.faq details > p{ padding-bottom: var(--sp-5); color: var(--espresso-soft); max-width: var(--measure); }
+.faq details > p + p{ margin-top: var(--sp-4); }
+
 /* ---------- Utilities ---------- */
 .text-center{ text-align:center; }
 .visually-hidden{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }

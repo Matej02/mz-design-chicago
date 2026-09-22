@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mz-design-chicago.vercel.app/sitemap.xml
+Sitemap: https://mzdesignchicago.com/sitemap.xml
