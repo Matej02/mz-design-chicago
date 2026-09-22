@@ -305,9 +305,11 @@
 
     // Fade in from the veil on arrival.
     document.documentElement.classList.add('is-entering');
-    requestAnimationFrame(function(){
-      requestAnimationFrame(function(){ document.documentElement.classList.remove('is-entering'); });
-    });
+    function clearEntering(){ document.documentElement.classList.remove('is-entering'); }
+    requestAnimationFrame(function(){ requestAnimationFrame(clearEntering); });
+    // rAF never fires in a background/hidden tab, which would otherwise leave
+    // the veil opaque over the whole page. Time-based fallback.
+    setTimeout(clearEntering, 300);
 
     document.addEventListener('click', function(ev){
       if (ev.defaultPrevented || ev.button !== 0) return;
@@ -330,6 +332,157 @@
     // Restore on back/forward (bfcache serves the old DOM with the veil up).
     window.addEventListener('pageshow', function(){
       document.documentElement.classList.remove('is-leaving');
+    });
+  }
+
+
+  /* ======================================================================
+     SIGNATURE LAYER — inertia scroll, cursor, intro, horizontal gallery
+     ====================================================================== */
+
+  /* ---- Inertia scroll -------------------------------------------------
+     Drives window.scrollTo rather than transforming a wrapper, so
+     position:sticky, anchors, find-in-page and the scrollbar all keep
+     working. Desktop pointers only. */
+  var velocity = 0;
+  if (ANIM && !isCoarse) {
+    var targetY = window.scrollY, currentY = targetY, running = false, lerp = 0.11;
+    function maxScroll(){ return document.documentElement.scrollHeight - window.innerHeight; }
+    function tick(){
+      var diff = targetY - currentY;
+      velocity = diff;
+      if (Math.abs(diff) < 0.4) { currentY = targetY; running = false; velocity = 0; applyVelocity(); return; }
+      currentY += diff * lerp;
+      window.scrollTo(0, currentY);
+      applyVelocity();
+      requestAnimationFrame(tick);
+    }
+    function start(){ if (!running) { running = true; requestAnimationFrame(tick); } }
+    window.addEventListener('wheel', function(ev){
+      if (ev.ctrlKey) return;                       // pinch-zoom
+      if (drawer && drawer.classList.contains('is-open')) return;
+      ev.preventDefault();
+      targetY = Math.max(0, Math.min(targetY + ev.deltaY, maxScroll()));
+      start();
+    }, { passive: false });
+    // Keep in sync when scrolled by any other means.
+    window.addEventListener('scroll', function(){
+      if (!running) { targetY = currentY = window.scrollY; }
+    }, { passive: true });
+    window.addEventListener('resize', function(){ targetY = currentY = window.scrollY; });
+  }
+
+  /* ---- Scroll velocity feeds a subtle stretch on media --------------- */
+  var velTargets = document.querySelectorAll('.hscroll__track, .mosaic, .tile .frame');
+  function applyVelocity(){
+    var v = Math.max(-40, Math.min(40, velocity));
+    var skew = (v * 0.035).toFixed(2);
+    for (var i = 0; i < velTargets.length; i++) velTargets[i].style.transform = 'skewY(' + skew + 'deg)';
+  }
+
+  /* ---- Custom cursor -------------------------------------------------- */
+  function initCursor(){
+    if (document.querySelector('.cursor')) return;
+    if (isCoarse || window.innerWidth < 900) return;
+    var cur = document.createElement('div');
+    cur.className = 'cursor';
+    cur.innerHTML = '<div class="cursor__ring"></div><div class="cursor__dot"></div><div class="cursor__label">View</div>';
+    document.body.appendChild(cur);
+    document.documentElement.classList.add('has-cursor');
+
+    var cx = window.innerWidth / 2, cy = window.innerHeight / 2, rx = cx, ry = cy;
+    var ring = cur.querySelector('.cursor__ring');
+    var dot = cur.querySelector('.cursor__dot');
+    var label = cur.querySelector('.cursor__label');
+
+    document.addEventListener('pointermove', function(ev){ cx = ev.clientX; cy = ev.clientY; });
+    (function cursorTick(){
+      rx += (cx - rx) * 0.18; ry += (cy - ry) * 0.18;
+      dot.style.transform = 'translate(' + cx + 'px,' + cy + 'px)';
+      ring.style.transform = 'translate(' + rx + 'px,' + ry + 'px)';
+      label.style.transform = 'translate(' + rx + 'px,' + ry + 'px)';
+      requestAnimationFrame(cursorTick);
+    })();
+
+    document.addEventListener('pointerover', function(ev){
+      var t = ev.target;
+      if (!t.closest) return;
+      if (t.closest('.tile, .hscroll__item, .figure-wide, .compare')) {
+        cur.classList.add('is-media'); cur.classList.remove('is-link');
+        label.textContent = t.closest('.compare') ? 'Drag' : 'View';
+      } else if (t.closest('a, button, summary, input, textarea, select')) {
+        cur.classList.add('is-link'); cur.classList.remove('is-media');
+      } else {
+        cur.classList.remove('is-media', 'is-link');
+      }
+    });
+  }
+  // Built on first mouse movement rather than at load: correct even when the
+  // page starts in a background tab, and never shown to touch or keyboard users.
+  if (ANIM) {
+    window.addEventListener('pointermove', function onFirstMove(ev){
+      if (ev.pointerType === 'touch') return;
+      window.removeEventListener('pointermove', onFirstMove);
+      initCursor();
+    });
+  }
+
+  /* ---- Intro curtain ---------------------------------------------------
+     Injected by JS, so a page without JS never sees it. Dismissed on load
+     and, regardless of what happens, by a hard timeout. */
+  if (ANIM && !sessionStorage.getItem('mz-intro-seen')) {
+    var intro = document.createElement('div');
+    intro.className = 'intro';
+    intro.setAttribute('aria-hidden', 'true');
+    intro.innerHTML =
+      '<div class="intro__mark"><span>M&amp;Z</span></div>' +
+      '<div class="intro__bar"><i></i></div>' +
+      '<div class="intro__label">Chicago</div>';
+    document.body.appendChild(intro);
+
+    var fill = intro.querySelector('i');
+    var pct = 0;
+    var creep = setInterval(function(){
+      pct = Math.min(pct + Math.random() * 18, 90);
+      fill.style.transform = 'scaleX(' + (pct / 100) + ')';
+    }, 130);
+
+    function dismissIntro(){
+      clearInterval(creep);
+      fill.style.transform = 'scaleX(1)';
+      sessionStorage.setItem('mz-intro-seen', '1');
+      setTimeout(function(){ intro.classList.add('is-done'); }, 260);
+      setTimeout(function(){ intro.remove(); }, 1200);
+    }
+    if (document.readyState === 'complete') setTimeout(dismissIntro, 450);
+    else window.addEventListener('load', function(){ setTimeout(dismissIntro, 450); });
+    setTimeout(dismissIntro, 3000);   // hard ceiling
+  }
+
+  /* ---- Horizontal scroll gallery -------------------------------------- */
+  var hs = document.querySelector('.hscroll');
+  if (hs && ANIM) {
+    var track = hs.querySelector('.hscroll__track');
+    var distance = 0;
+    function sizeHScroll(){
+      // Below 900px the CSS lays this out as a normal stacked list.
+      if (window.innerWidth < 900 || window.innerWidth === 0) {
+        hs.style.height = ''; distance = 0; return;
+      }
+      distance = Math.max(track.scrollWidth - window.innerWidth, 0);
+      hs.style.height = (window.innerHeight + distance) + 'px';
+    }
+    sizeHScroll();
+    window.addEventListener('resize', sizeHScroll);
+    window.addEventListener('load', sizeHScroll);
+    document.addEventListener('visibilitychange', sizeHScroll);
+    if ('ResizeObserver' in window) new ResizeObserver(sizeHScroll).observe(track);
+    onScrollFrame(function(){
+      if (!distance) { track.style.translate = ''; return; }
+      var span = hs.offsetHeight - window.innerHeight;
+      if (span <= 0) return;
+      var progress = Math.min(Math.max(-hs.getBoundingClientRect().top / span, 0), 1);
+      track.style.translate = '-' + (progress * distance).toFixed(1) + 'px 0';
     });
   }
 
