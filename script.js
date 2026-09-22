@@ -255,7 +255,8 @@
   /* ---- Parallax inside framed media ---------------------------------- */
   if (ANIM && !isCoarse) {
     var pxEls = [];
-    document.querySelectorAll('.tile .frame img, .page-hero-media .frame img, .figure-wide img, .designer .frame img')
+    // Skip anything the WebGL layer takes over, and anything already hidden.
+    document.querySelectorAll('.figure-wide img, .designer .frame img, .page-hero-media .frame img')
       .forEach(function(img){ img.setAttribute('data-parallax',''); pxEls.push(img); });
 
     if (pxEls.length) {
@@ -346,7 +347,7 @@
      working. Desktop pointers only. */
   var velocity = 0;
   if (ANIM && !isCoarse) {
-    var targetY = window.scrollY, currentY = targetY, running = false, lerp = 0.11;
+    var targetY = window.scrollY, currentY = targetY, running = false, lerp = 0.16;
     function maxScroll(){ return document.documentElement.scrollHeight - window.innerHeight; }
     function tick(){
       var diff = targetY - currentY;
@@ -372,13 +373,11 @@
     window.addEventListener('resize', function(){ targetY = currentY = window.scrollY; });
   }
 
-  /* ---- Scroll velocity feeds a subtle stretch on media --------------- */
-  var velTargets = document.querySelectorAll('.hscroll__track, .mosaic, .tile .frame');
-  function applyVelocity(){
-    var v = Math.max(-40, Math.min(40, velocity));
-    var skew = (v * 0.035).toFixed(2);
-    for (var i = 0; i < velTargets.length; i++) velTargets[i].style.transform = 'skewY(' + skew + 'deg)';
-  }
+  /* ---- Scroll velocity ------------------------------------------------
+     Deliberately writes nothing to the DOM. The previous version skewed
+     every framed element each frame, which re-rasterised the canvases
+     behind them; the warp is now a shader uniform in webgl.js. */
+  function applyVelocity(){ /* no-op: handled on the GPU */ }
 
   /* ---- Custom cursor -------------------------------------------------- */
   function initCursor(){

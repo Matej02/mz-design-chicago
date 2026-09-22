@@ -1,64 +1,102 @@
 /* ==========================================================================
-   M&Z Design Chicago — WebGL media layer
+   M&Z Design Chicago — WebGL gallery
    --------------------------------------------------------------------------
-   Upgrades framed photographs into WebGL planes that ripple toward the
-   cursor and warp with scroll velocity.
+   ONE WebGL context renders every plane in the gallery.
 
-   Written against raw WebGL rather than a library: the whole effect is one
-   textured quad with a displaced UV lookup, which does not justify shipping
-   100kB+ of three.js to a client site.
+   The previous version created a context per photograph (seven of them) and
+   the scroll layer wrote `transform: skewY()` onto each containing element
+   every frame, which forced the compositor to re-rasterise seven canvases
+   sixty times a second. That is what made the page stutter.
 
-   Fail-safe by construction:
-   · the original <img> stays in the DOM for SEO, alt text and printing;
-   · it is only hidden once a context, a compiled program AND a texture all
-     succeed, so any failure at any step leaves the plain photograph;
-   · nothing runs for reduced motion, coarse pointers or narrow screens;
-   · planes only render while on screen.
+   Here the only per-frame work is: read each plane's rect, upload a handful
+   of uniforms, draw. No DOM writes at all — every bit of motion (hover
+   ripple, scroll warp, entrance) happens inside the shader, where it is
+   effectively free.
+
+   Fail-safe: the <img> stays in the DOM and is only hidden once a context,
+   a linked program and its texture have all succeeded. Any failure, a lost
+   context, reduced motion, a coarse pointer or a narrow screen all leave the
+   plain photographs exactly as they were.
    ========================================================================== */
 (function () {
   'use strict';
 
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if (window.matchMedia('(pointer: coarse)').matches) return;
-  if (window.innerWidth < 900) return;
+  // Guards are evaluated against a REAL viewport. A page opened in a
+  // background tab reports innerWidth 0, and checking eagerly would disable
+  // the gallery for the entire visit — the same trap that bit the scroll
+  // layer twice. Wait for a genuine measurement instead.
+  function eligible() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+    if (window.matchMedia('(pointer: coarse)').matches) return false;
+    return window.innerWidth >= 900;
+  }
+
+  var started = false;
+  function attempt() {
+    if (started) return;
+    if (!window.innerWidth) return;          // no viewport yet — try again later
+    if (!eligible()) return;
+    started = true;
+    cleanupWaiters();
+    boot();
+  }
+  function cleanupWaiters() {
+    window.removeEventListener('resize', attempt);
+    window.removeEventListener('load', attempt);
+    document.removeEventListener('visibilitychange', attempt);
+  }
+  window.addEventListener('resize', attempt);
+  window.addEventListener('load', attempt);
+  document.addEventListener('visibilitychange', attempt);
 
   var VERT = [
+    // Must match the fragment shader's precision: uVel is declared in both,
+    // and GLSL refuses to link a uniform that differs in precision. Vertex
+    // shaders default to highp, fragment shaders to nothing, so state it.
+    'precision mediump float;',
     'attribute vec2 aPos;',
+    'uniform vec4 uRect;',     // x, y, w, h in clip space
+    'uniform float uVel;',
     'varying vec2 vUv;',
     'void main(){',
-    '  vUv = aPos * 0.5 + 0.5;',
-    '  vUv.y = 1.0 - vUv.y;',
-    '  gl_Position = vec4(aPos, 0.0, 1.0);',
+    '  vUv = vec2(aPos.x, 1.0 - aPos.y);',
+    '  vec2 p = uRect.xy + aPos * uRect.zw;',
+    // the plane itself bows with scroll velocity — cheaper and smoother than
+    // skewing DOM nodes, and it cannot touch layout
+    '  p.y += sin(aPos.x * 3.1415926) * uVel * 0.05;',
+    '  gl_Position = vec4(p, 0.0, 1.0);',
     '}'
   ].join('\n');
 
   var FRAG = [
     'precision mediump float;',
     'uniform sampler2D uTex;',
-    'uniform vec2  uCover;',   // cover-fit scale
+    'uniform vec2  uCover;',
     'uniform vec2  uMouse;',
     'uniform float uHover;',
     'uniform float uTime;',
     'uniform float uVel;',
+    'uniform float uIn;',
     'varying vec2 vUv;',
     'void main(){',
-    // cover-fit the texture inside the plane
     '  vec2 uv = (vUv - 0.5) / uCover + 0.5;',
-    // ripple radiating from the cursor, fading with distance
     '  vec2 d = uv - uMouse;',
     '  float dist = length(d);',
-    '  float falloff = smoothstep(0.6, 0.0, dist);',
-    '  float ripple = sin(dist * 22.0 - uTime * 3.2) * 0.018 * uHover * falloff;',
+    '  float falloff = smoothstep(0.65, 0.0, dist);',
+    '  float ripple = sin(dist * 20.0 - uTime * 3.0) * 0.022 * uHover * falloff;',
     '  uv += normalize(d + 1e-5) * ripple;',
-    // scroll velocity bends the plane horizontally
-    '  uv.y += sin(uv.x * 5.0 + uTime * 0.4) * uVel * 0.06;',
-    // a touch of chromatic separation while hovering, for depth
-    '  float ca = 0.0035 * uHover * falloff;',
+    '  uv.y += sin(uv.x * 4.0 + uTime * 0.3) * uVel * 0.03;',
+    // entrance: the photograph slides up behind its own frame as it reveals
+    '  uv.y += (1.0 - uIn) * 0.22;',
+    '  float ca = 0.004 * uHover * falloff;',
     '  float r = texture2D(uTex, uv + vec2(ca, 0.0)).r;',
     '  vec4  g = texture2D(uTex, uv);',
     '  float b = texture2D(uTex, uv - vec2(ca, 0.0)).b;',
-    '  if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) { gl_FragColor = vec4(0.92,0.88,0.80,1.0); return; }',
-    '  gl_FragColor = vec4(r, g.g, b, 1.0);',
+    '  vec3 col = vec3(r, g.g, b);',
+    // warm lift under the cursor, so hovering reads as lit rather than filtered
+    '  col += vec3(0.16, 0.12, 0.06) * uHover * falloff;',
+    '  float edge = step(0.0, uv.x) * step(uv.x, 1.0) * step(0.0, uv.y) * step(uv.y, 1.0);',
+    '  gl_FragColor = vec4(col, uIn * edge);',
     '}'
   ].join('\n');
 
@@ -70,183 +108,165 @@
     return sh;
   }
 
-  function createPlane(frame) {
-    var img = frame.querySelector('img');
-    if (!img) return null;
+  function boot() {
+    var pin = document.querySelector('.hscroll__pin');
+    var frames = pin ? pin.querySelectorAll('.hscroll__item .frame') : [];
+    if (!pin || !frames.length) return;
 
     var canvas = document.createElement('canvas');
     canvas.setAttribute('aria-hidden', 'true');
-    canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;';
+    canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;';
 
-    var gl = canvas.getContext('webgl', { alpha: false, antialias: false, depth: false })
+    var gl = canvas.getContext('webgl', { alpha: true, antialias: false, depth: false })
           || canvas.getContext('experimental-webgl');
-    if (!gl) return null;
+    if (!gl) return;
 
     var vs = compile(gl, gl.VERTEX_SHADER, VERT);
     var fs = compile(gl, gl.FRAGMENT_SHADER, FRAG);
-    if (!vs || !fs) return null;
+    if (!vs || !fs) return;
 
     var prog = gl.createProgram();
     gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return null;
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
     gl.useProgram(prog);
 
     var buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0,0, 1,0, 0,1, 1,1]), gl.STATIC_DRAW);
     var aPos = gl.getAttribLocation(prog, 'aPos');
     gl.enableVertexAttribArray(aPos);
     gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
 
-    var tex = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    try {
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, img);
-    } catch (e) {
-      return null;                       // tainted or undecoded — keep the <img>
-    }
-
-    var U = {
-      cover: gl.getUniformLocation(prog, 'uCover'),
-      mouse: gl.getUniformLocation(prog, 'uMouse'),
-      hover: gl.getUniformLocation(prog, 'uHover'),
-      time:  gl.getUniformLocation(prog, 'uTime'),
-      vel:   gl.getUniformLocation(prog, 'uVel')
-    };
-
-    // Only now is it safe to swap the photograph for the canvas.
-    frame.appendChild(canvas);
-    img.style.visibility = 'hidden';
-
-    // A lost context would otherwise leave an empty frame with the photograph
-    // still hidden behind it. Put the photograph back instead.
-    canvas.addEventListener('webglcontextlost', function (ev) {
-      ev.preventDefault();
-      state.visible = false;
-      img.style.visibility = '';
-      canvas.style.display = 'none';
-    });
-    canvas.addEventListener('webglcontextrestored', function () {
-      img.style.visibility = 'hidden';
-      canvas.style.display = '';
-      state.visible = true;
-      resize();
+    var U = {};
+    ['uRect','uCover','uMouse','uHover','uTime','uVel','uIn'].forEach(function (n) {
+      U[n] = gl.getUniformLocation(prog, n);
     });
 
-    var state = {
-      frame: frame, gl: gl, canvas: canvas,
-      mx: 0.5, my: 0.5, hover: 0, hoverTarget: 0, visible: false
-    };
-
-    function resize() {
-      var r = frame.getBoundingClientRect();
-      if (!r.width || !r.height) return;
-      var dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width  = Math.round(r.width  * dpr);
-      canvas.height = Math.round(r.height * dpr);
-      gl.viewport(0, 0, canvas.width, canvas.height);
-
-      // cover-fit: scale the shorter axis so the photo fills without stretching
-      var planeAspect = r.width / r.height;
-      var imgAspect = (img.naturalWidth || 1) / (img.naturalHeight || 1);
-      if (imgAspect > planeAspect) gl.uniform2f(U.cover, planeAspect / imgAspect, 1);
-      else                         gl.uniform2f(U.cover, 1, imgAspect / planeAspect);
-    }
-    state.resize = resize;
-    resize();
-
-    frame.addEventListener('pointerenter', function () { state.hoverTarget = 1; });
-    frame.addEventListener('pointerleave', function () { state.hoverTarget = 0; });
-    frame.addEventListener('pointermove', function (ev) {
-      var r = frame.getBoundingClientRect();
-      state.mx = (ev.clientX - r.left) / r.width;
-      state.my = 1 - (ev.clientY - r.top) / r.height;
-    });
-
-    state.draw = function (t, vel) {
-      state.hover += (state.hoverTarget - state.hover) * 0.08;
-      gl.useProgram(prog);
-      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-      gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
-      gl.bindTexture(gl.TEXTURE_2D, tex);
-      gl.uniform2f(U.mouse, state.mx, state.my);
-      gl.uniform1f(U.hover, state.hover);
-      gl.uniform1f(U.time, t);
-      gl.uniform1f(U.vel, vel);
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    };
-    return state;
-  }
-
-  function boot() {
-    var frames = document.querySelectorAll('.hscroll__item .frame, .mosaic .tile .frame, .page-hero-media .frame');
-    if (!frames.length) return;
-
-    var ro = ('ResizeObserver' in window)
-      ? new ResizeObserver(function (entries) {
-          entries.forEach(function (e) {
-            for (var i = 0; i < planes.length; i++) {
-              if (planes[i].frame === e.target) planes[i].resize();
-            }
-          });
-        })
-      : null;
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.clearColor(0, 0, 0, 0);
 
     var planes = [];
 
-    // Render only what is on screen. Created up front so planes built later
-    // — every lazily-loaded photograph — are observed the moment they exist.
-    var io = ('IntersectionObserver' in window)
-      ? new IntersectionObserver(function (entries) {
-          entries.forEach(function (e) {
-            for (var i = 0; i < planes.length; i++) {
-              if (planes[i].frame === e.target) planes[i].visible = e.isIntersecting;
-            }
-          });
-        }, { rootMargin: '150px' })
-      : null;
+    function addPlane(frame) {
+      var img = frame.querySelector('img');
+      if (!img || !img.naturalWidth) return;
+      var tex = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      try {
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+      } catch (e) { return; }
 
-    function register(frame) {
-      var p = createPlane(frame);
-      if (!p) return;                       // failed: the <img> simply stays
+      var p = {
+        frame: frame, img: img, tex: tex,
+        aspect: img.naturalWidth / img.naturalHeight,
+        mx: 0.5, my: 0.5, hover: 0, target: 0, reveal: 0, rect: null
+      };
+      frame.addEventListener('pointerenter', function () { p.target = 1; });
+      frame.addEventListener('pointerleave', function () { p.target = 0; });
+      frame.addEventListener('pointermove', function (ev) {
+        var r = p.rect; if (!r) return;
+        p.mx = (ev.clientX - r.left) / r.width;
+        p.my = 1 - (ev.clientY - r.top) / r.height;
+      });
       planes.push(p);
-      if (ro) ro.observe(p.frame);
-      if (io) io.observe(p.frame);
-      else p.visible = true;
       document.documentElement.classList.add('has-webgl');
     }
 
-    frames.forEach(function (frame) {
+    Array.prototype.forEach.call(frames, function (frame) {
       var img = frame.querySelector('img');
       if (!img) return;
-      // Most photographs are loading="lazy", so they are not decoded at boot.
-      if (img.complete && img.naturalWidth) register(frame);
-      else img.addEventListener('load', function () { register(frame); }, { once: true });
+      if (img.complete && img.naturalWidth) addPlane(frame);
+      else img.addEventListener('load', function () { addPlane(frame); }, { once: true });
     });
 
-    var lastY = window.scrollY, vel = 0;
-    window.addEventListener('scroll', function () {
-      vel = Math.max(-1, Math.min(1, (window.scrollY - lastY) / 60));
+    canvas.addEventListener('webglcontextlost', function (ev) {
+      ev.preventDefault();
+      planes.forEach(function (p) { p.img.style.visibility = ''; });
+      canvas.style.display = 'none';
+      document.documentElement.classList.remove('has-webgl');
+    });
+
+    pin.appendChild(canvas);
+
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var cw = 0, ch = 0;
+    function resize() {
+      var r = pin.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      cw = r.width; ch = r.height;
+      canvas.width = Math.round(cw * dpr);
+      canvas.height = Math.round(ch * dpr);
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    window.addEventListener('load', resize);
+
+    var lastY = window.scrollY, vel = 0, running = true;
+
+    document.addEventListener('visibilitychange', function () {
+      running = !document.hidden;
       lastY = window.scrollY;
-    }, { passive: true });
+      if (running) requestAnimationFrame(loop);
+    });
 
-    window.addEventListener('resize', function () { planes.forEach(function (p) { p.resize(); }); });
-
-    (function loop(ts) {
-      var t = (ts || 0) / 1000;
-      vel *= 0.92;
-      for (var i = 0; i < planes.length; i++) {
-        if (planes[i].visible) planes[i].draw(t, vel);
-      }
+    function loop(ts) {
+      if (!running) return;
       requestAnimationFrame(loop);
-    })(0);
+      if (!planes.length) return;
+      if (!cw || !ch) { resize(); if (!cw || !ch) return; }
 
+      var y = window.scrollY;
+      vel += ((y - lastY) / 50 - vel) * 0.25;
+      vel = Math.max(-1.2, Math.min(1.2, vel));
+      lastY = y;
+
+      var pinRect = pin.getBoundingClientRect();
+      if (pinRect.bottom < -100 || pinRect.top > window.innerHeight + 100) return;
+      if (Math.abs(pinRect.width - cw) > 1 || Math.abs(pinRect.height - ch) > 1) resize();
+
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      var t = (ts || 0) / 1000;
+
+      for (var i = 0; i < planes.length; i++) {
+        var p = planes[i];
+        var r = p.frame.getBoundingClientRect();
+        p.rect = r;
+        if (r.right < pinRect.left - 240 || r.left > pinRect.right + 240) continue;
+
+        // DOM rect -> clip space, relative to the canvas
+        var x = (r.left - pinRect.left) / cw * 2 - 1;
+        var yTop = 1 - (r.top - pinRect.top) / ch * 2;
+        var w = r.width / cw * 2;
+        var h = r.height / ch * 2;
+
+        p.hover += (p.target - p.hover) * 0.09;
+        p.reveal += ((r.left < window.innerWidth ? 1 : 0) - p.reveal) * 0.08;
+
+        var planeAspect = r.width / r.height;
+        if (p.aspect > planeAspect) gl.uniform2f(U.uCover, planeAspect / p.aspect, 1);
+        else                        gl.uniform2f(U.uCover, 1, p.aspect / planeAspect);
+
+        gl.uniform4f(U.uRect, x, yTop - h, w, h);
+        gl.uniform2f(U.uMouse, p.mx, p.my);
+        gl.uniform1f(U.uHover, p.hover);
+        gl.uniform1f(U.uTime, t);
+        gl.uniform1f(U.uVel, vel);
+        gl.uniform1f(U.uIn, Math.min(p.reveal, 1));
+        gl.bindTexture(gl.TEXTURE_2D, p.tex);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+        if (!p.painted) { p.painted = true; p.img.style.visibility = 'hidden'; }
+      }
+    }
+    requestAnimationFrame(loop);
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-  else boot();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', attempt);
+  else attempt();
 })();

@@ -626,6 +626,12 @@ body.body-noir{ background: var(--noir); }
   .hscroll__head, .hscroll__hint{ position:static; margin-bottom: var(--sp-5); }
 }
 
+
+/* The single gallery canvas sits behind the track; frames go transparent so
+   it shows through, while captions stay in the DOM above it. */
+.hscroll__track{ position:relative; z-index:1; }
+.has-webgl .hscroll__item .frame{ background:transparent; }
+
 /* ---------- Utilities ---------- */
 .text-center{ text-align:center; }
 .visually-hidden{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
