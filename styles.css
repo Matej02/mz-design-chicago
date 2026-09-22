@@ -604,24 +604,28 @@ body.body-noir{ background: var(--noir); }
 .cursor.is-link .cursor__ring{ width:62px; height:62px; }
 .js-anim.has-cursor, .js-anim.has-cursor a, .js-anim.has-cursor button{ cursor:none; }
 
-/* ---- Horizontal scroll gallery ---- */
+/* ---- Horizontal scroll gallery ----
+   The header sits in normal flow at the top of a column; the track fills
+   whatever height is left below it. Nothing here is layered with absolute
+   positioning, so the heading can never overlap the photographs — there is
+   no vertical space in which they both exist at once. */
 .hscroll{ position:relative; }
-.hscroll__pin{ position:sticky; top:0; height:100svh; display:flex; align-items:center;
+.hscroll__pin{ position:sticky; top:0; height:100svh; display:flex; flex-direction:column;
   overflow:hidden; }
-.hscroll__track{ display:flex; gap: var(--sp-5); padding-inline: var(--sp-7); will-change:transform; }
-.hscroll__item{ flex:0 0 auto; width:min(34vw,460px); }
-.hscroll__item.is-tall{ width:min(24vw,330px); }
-.hscroll__item .frame{ height:56vh; }
-.hscroll__item.is-tall .frame{ height:66vh; }
-.hscroll__head{ position:absolute; top: var(--sp-7); left:0; right:0; z-index:2; pointer-events:none; }
-.hscroll__hint{ position:absolute; bottom: var(--sp-7); right: var(--sp-7); z-index:2;
+.hscroll__head{ flex:0 0 auto; padding-block: var(--sp-7) var(--sp-5); }
+.hscroll__track{ flex:1 1 auto; min-height:0; display:flex; align-items:center;
+  gap: var(--sp-5); padding-inline: var(--sp-7); will-change:transform; }
+.hscroll__item{ flex:0 0 auto; width:min(34vw,460px); height:80%; }
+.hscroll__item.is-tall{ width:min(24vw,330px); height:94%; }
+.hscroll__item .frame{ height:100%; }
+.hscroll__hint{ position:absolute; bottom: var(--sp-6); right: var(--sp-7); z-index:2;
   font-size: var(--fs-label); letter-spacing:.16em; text-transform:uppercase;
   color: var(--espresso-faint); display:flex; align-items:center; gap: var(--sp-3); }
 @media (max-width: 899px){
   .hscroll{ height:auto !important; }
   .hscroll__pin{ position:static; height:auto; display:block; padding-block: var(--sp-7); }
   .hscroll__track{ transform:none !important; flex-direction:column; padding-inline:0; }
-  .hscroll__item, .hscroll__item.is-tall{ width:100%; }
+  .hscroll__item, .hscroll__item.is-tall{ width:100%; height:auto; }
   .hscroll__item .frame, .hscroll__item.is-tall .frame{ height:auto; aspect-ratio:4/3; }
   .hscroll__head, .hscroll__hint{ position:static; margin-bottom: var(--sp-5); }
 }
