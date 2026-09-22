@@ -273,10 +273,28 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 .swatch span{ opacity:.7; font-size:.85em; }
 
 /* ---------- Page hero (interior pages) ---------- */
-.page-hero{ padding-block: calc(var(--sp-9) + 2.5rem) var(--sp-8); background: var(--stone); border-bottom:1px solid var(--line); }
-.page-hero h1{ max-width:22ch; }
-.page-hero .lead{ max-width:44rem; }
+.page-hero{ padding-block: calc(var(--sp-7) + 4.5rem) var(--sp-7); background: var(--stone); border-bottom:1px solid var(--line); }
+.page-hero h1{ max-width:20ch; }
+.page-hero .lead{ max-width:40rem; }
 .page-hero--noir{ background: var(--noir); border-bottom-color: var(--noir-line); }
+
+/* Interior pages open with something to look at, not an empty band of colour:
+   the copy sits beside a piece of the work itself. */
+.page-hero-grid{ display:grid; gap: var(--sp-7); grid-template-columns:1fr; align-items:center; }
+@media (min-width: 900px){ .page-hero-grid{ grid-template-columns: 1.02fr 0.98fr; gap: var(--sp-8); } }
+.page-hero-grid .frame{ background: var(--ivory-raised); }
+.page-hero-media{ position:relative; }
+.page-hero-media figcaption{ margin-top: var(--sp-3); font-size: var(--fs-label); letter-spacing:.06em; text-transform:uppercase; color: var(--espresso-faint); }
+.page-hero--noir .page-hero-media figcaption{ color: rgba(243,236,221,.6); }
+
+/* Wide technical figure — shown whole, never cropped, and openable at full
+   size, because the value of a drawing is in its detail. */
+.figure-wide{ margin-top: var(--sp-7); }
+.figure-wide img{ width:100%; height:auto; border:1px solid var(--line); background:#fff; }
+.section--noir .figure-wide img{ border-color: var(--noir-line); }
+.figure-wide figcaption{ margin-top: var(--sp-4); display:flex; flex-wrap:wrap; gap: var(--sp-4);
+  align-items:center; justify-content:space-between; font-size: var(--fs-small); color: var(--espresso-faint); }
+.figure-wide figcaption span{ max-width: 52ch; }
 
 /* ---------- Credentials strip ---------- */
 .creds-strip{ display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); padding-block: var(--sp-7); border-block:1px solid var(--line); }

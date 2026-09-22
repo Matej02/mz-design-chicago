@@ -19,7 +19,7 @@
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="styles.css?v=202609221107">
+<link rel="stylesheet" href="styles.css?v=202609221113">
 <noscript><style>[data-reveal]{opacity:1!important;transform:none!important;}</style></noscript>
 </head>
 <body>
@@ -77,10 +77,18 @@
 
   <section class="page-hero">
     <div class="container">
-      <p class="breadcrumb"><a href="/">Home</a> / About</p>
+      <div class="page-hero-grid">
+        <div>
+          <p class="breadcrumb"><a href="/">Home</a> / About</p>
       <p class="eyebrow">About M&amp;Z</p>
       <h1>Design that starts with how you live.</h1>
       <p class="lead">M&amp;Z Design Chicago pairs interior design with construction coordination, so the vision and the build speak the same language from the very first sketch.</p>
+        </div>
+        <div class="page-hero-media">
+          <div class="frame ar-4x3"><img src="assets/img/living-room.jpg" width="1536" height="1024" alt="Cream sectional living room with layered natural light" loading="eager" decoding="async"></div>
+          <figcaption>Living room · Design visualization</figcaption>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -163,15 +171,27 @@
 
   <section class="section">
     <div class="container">
-      <div class="split split--wide-first">
-        <div class="frame ar-16x9" data-reveal>
-          <img src="assets/img/concept-drawing-bath.jpg" width="1600" height="821" alt="M&amp;Z bathroom concept drawing: floor plan, vanity elevation, fixture details and a full materials schedule" loading="lazy" decoding="async">
+      <div class="section-head">
+        <p class="eyebrow">What Design Actually Means Here</p>
+        <h2>You get drawings, not just mood boards.</h2>
+        <p class="lead">Every project is documented properly — floor plans, elevations, fixture details and a written materials schedule.</p>
+      </div>
+
+      <figure class="figure-wide" data-reveal>
+        <img src="assets/img/concept-drawing-bath.jpg" width="1600" height="821" alt="M&amp;Z bathroom concept drawing: perspective view, floor plan with dimensions, vanity elevation, fixture details and a written materials schedule" loading="lazy" decoding="async">
+        <figcaption>
+          <span>Bathroom concept drawing — perspective, floor plan, vanity elevation, fixture details and the full materials schedule.</span>
+          <a class="btn btn-ghost" href="assets/img/concept-drawing-bath.jpg" target="_blank" rel="noopener">Open full size <svg><use href="assets/icons.svg#icon-arrow"></use></svg></a>
+        </figcaption>
+      </figure>
+
+      <div class="split split--start" data-reveal>
+        <div>
+          <h3>Why it matters</h3>
+          <p>Your trades quote from the same drawing you approved, so the finished room matches the room you signed off on — no mid-build guesswork, no surprise change orders because something was never specified.</p>
         </div>
-        <div data-reveal>
-          <p class="eyebrow">What Design Actually Means Here</p>
-          <h2>You get drawings, not just mood boards.</h2>
-          <p class="lead">Every project is documented properly — floor plans, elevations, fixture details and a written materials schedule.</p>
-          <p>That is what makes the build predictable: your trades quote from the same drawing you approved, so the finished room matches the room you signed off on.</p>
+        <div>
+          <h3>What the drawing set covers</h3>
           <ul class="spec-list">
             <li>Floor plan with dimensions</li>
             <li>Vanity and cabinetry elevations</li>
@@ -239,6 +259,6 @@
   </div>
 </footer>
 
-<script src="script.js?v=202609221107" defer></script>
+<script src="script.js?v=202609221113" defer></script>
 </body>
 </html>
