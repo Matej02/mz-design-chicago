@@ -42,7 +42,7 @@
   --font-body: 'Work Sans', sans-serif;
 
   /* Type scale — wide dynamic range: big display, small labels. */
-  --fs-hero: clamp(3.1rem, 2rem + 5.4vw, 7rem);
+  --fs-hero: clamp(3.6rem, 2.1rem + 7vw, 9rem);
   --fs-h1: clamp(2.6rem, 1.9rem + 3.4vw, 5rem);
   --fs-h2: clamp(2.1rem, 1.7rem + 2.2vw, 3.6rem);
   --fs-h3: clamp(1.3rem, 1.2rem + 0.55vw, 1.75rem);
@@ -236,18 +236,29 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 }
 .hero-body{ position:relative; z-index:1; width:100%; padding-block: calc(var(--sp-7) + 4rem) var(--sp-7); }
 .hero-eyebrow{ font-size: var(--fs-label); letter-spacing:0.22em; text-transform:uppercase; color: var(--gold-light); font-weight:600; }
-.hero h1{ font-size: var(--fs-hero); color:#fff; font-weight:600; margin-top: var(--sp-4); max-width:17ch; line-height:1.0; letter-spacing:-0.015em; }
+.hero h1{ font-size: var(--fs-hero); color:#fff; font-weight:600; margin-top: var(--sp-4); max-width:16ch; line-height:0.95; letter-spacing:-0.018em; }
 .hero h1 em{ color: var(--gold-light); }
 .hero-sub{ font-size: var(--fs-lead); color: rgba(243,236,221,0.85); max-width:44rem; margin-top: var(--sp-5); line-height:1.5; }
 .hero-actions{ display:flex; flex-wrap:wrap; gap: var(--sp-4); margin-top: var(--sp-6); }
 
 .swatch-key{ display:flex; flex-wrap:wrap; gap: var(--sp-5) var(--sp-7); margin-top: var(--sp-6); padding-top: var(--sp-5); border-top:1px solid var(--noir-line); }
 
+/* Narrow screens — same rule: the hero resolves within one screen, so the
+   swatch key is never half-cut at the bottom. */
+@media (max-width: 899px){
+  .hero-body{ padding-block: calc(var(--sp-5) + 3.5rem) var(--sp-5); }
+  .hero-sub{ margin-top: var(--sp-4); }
+  .hero-actions{ margin-top: var(--sp-5); gap: var(--sp-3); }
+  .swatch-key{ margin-top: var(--sp-5); padding-top: var(--sp-4); gap: var(--sp-3) var(--sp-5); }
+  .swatch-chip{ width:1.75rem; height:1.75rem; }
+  .swatch span{ font-size:.8em; }
+}
+
 /* Short viewports (most laptops) — the hero must always fit one screen,
    so the signature swatch key is never orphaned below the fold. */
 @media (min-width: 900px) and (max-height: 860px){
-  .hero-body{ padding-block: calc(var(--sp-6) + 3.5rem) var(--sp-6); }
-  .hero h1{ font-size: clamp(2.6rem, 1.4rem + 3.6vw, 4.5rem); }
+  .hero-body{ padding-block: calc(var(--sp-5) + 3.25rem) var(--sp-5); }
+  .hero h1{ font-size: clamp(3.2rem, 1.5rem + 5.6vw, 6.75rem); }
   .hero-sub{ font-size: 1.125rem; margin-top: var(--sp-4); }
   .hero-actions{ margin-top: var(--sp-5); }
   .swatch-key{ margin-top: var(--sp-5); padding-top: var(--sp-4); gap: var(--sp-4) var(--sp-6); }
