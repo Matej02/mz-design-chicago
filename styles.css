@@ -518,6 +518,54 @@ body.body-noir{ background: var(--noir); }
 .faq details > p{ padding-bottom: var(--sp-5); color: var(--espresso-soft); max-width: var(--measure); }
 .faq details > p + p{ margin-top: var(--sp-4); }
 
+
+/* ==========================================================================
+   Motion layer
+   --------------------------------------------------------------------------
+   Every rule below is scoped to .js-anim, which script.js only adds once it
+   has confirmed JS is running AND the visitor has not asked for reduced
+   motion. Without that class the page renders fully static and fully
+   visible — no animation can ever leave content stranded.
+   ========================================================================== */
+
+/* Word-mask headline reveal */
+.js-anim .w{ display:inline-block; overflow:hidden; vertical-align:bottom;
+  padding-bottom:.16em; margin-bottom:-.16em; }
+.js-anim .w > span{ display:inline-block; transform:translateY(115%);
+  transition: transform 1s var(--ease); }
+.js-anim .is-in .w > span{ transform:none; }
+
+/* Scroll progress */
+.scroll-progress{ position:fixed; top:0; left:0; height:2px; width:100%;
+  transform:scaleX(0); transform-origin:0 50%; z-index:150;
+  background: linear-gradient(90deg, var(--gold-deep), var(--gold-light));
+  pointer-events:none; }
+
+/* Page transition veil */
+.page-fade{ position:fixed; inset:0; background: var(--noir); z-index:400;
+  opacity:0; pointer-events:none; transition: opacity .45s var(--ease); }
+.is-leaving .page-fade{ opacity:1; }
+.is-entering .page-fade{ opacity:1; transition:none; }
+
+/* Material marquee — the studio's own palette, running as a band */
+.marquee{ overflow:hidden; border-block:1px solid var(--line); padding-block: var(--sp-5);
+  background: var(--ivory-raised); }
+.marquee__track{ display:flex; width:max-content; gap: var(--sp-6);
+  font-family: var(--font-display); font-size: clamp(1.4rem,1rem+1.6vw,2.4rem);
+  color: var(--espresso-faint); white-space:nowrap; }
+.js-anim .marquee__track{ animation: marquee 38s linear infinite; }
+.marquee__track span{ display:inline-flex; align-items:center; gap: var(--sp-6); }
+.marquee__track i{ font-style:normal; color: var(--gold); }
+@keyframes marquee{ to{ transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce){ .js-anim .marquee__track{ animation:none; } }
+
+/* Pinned media column */
+@media (min-width: 900px){
+  .split--pinned{ align-items:start; }
+  .split--pinned .pin{ position:sticky; top: calc(var(--sp-7) + 3rem); }
+}
+
+
 /* ---------- Utilities ---------- */
 .text-center{ text-align:center; }
 .visually-hidden{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }

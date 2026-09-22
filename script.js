@@ -115,7 +115,7 @@
         'TEL;TYPE=WORK,VOICE:+17739681042',
         'EMAIL:m&zdesign@yahoo.com',
         'ADR;TYPE=WORK:;;;Chicago;IL;;US',
-        'URL:https://mz-design-chicago.vercel.app/',
+        'URL:https://mzdesignchicago.com/',
         'END:VCARD'
       ];
       var blob = new Blob([lines.join('\r\n')], { type: 'text/vcard' });
@@ -167,4 +167,170 @@
       window.location.href = mailto;
     });
   }
+
+  /* ======================================================================
+     MOTION LAYER
+     Enabled only when JS is running and reduced motion is not requested.
+     Nothing here is load-bearing: with it disabled the page is static and
+     fully visible.
+     ====================================================================== */
+  var ANIM = !reduceMotion;
+  if (ANIM) document.documentElement.classList.add('js-anim');
+
+  var isCoarse = window.matchMedia('(pointer: coarse)').matches;
+  var rafPending = false;
+  var scrollHandlers = [];
+  function onScrollFrame(fn){ scrollHandlers.push(fn); }
+  function runScrollHandlers(){
+    var y = window.scrollY;
+    for (var i = 0; i < scrollHandlers.length; i++) scrollHandlers[i](y);
+    rafPending = false;
+  }
+  window.addEventListener('scroll', function(){
+    if (rafPending) return;
+    rafPending = true;
+    requestAnimationFrame(runScrollHandlers);
+  }, { passive: true });
+
+  /* ---- Word-mask headline reveal ------------------------------------- */
+  if (ANIM && 'IntersectionObserver' in window) {
+    var heads = document.querySelectorAll(
+      '.hero h1, .page-hero h1, .section-head h2, .cta-band h2, .split h2, .original-card h3, .flow-title, .designer h2'
+    );
+
+    function wrapWords(el){
+      if (el.dataset.split === '1') return;
+      var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+      var nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach(function(node){
+        if (!node.nodeValue.trim()) return;
+        var frag = document.createDocumentFragment();
+        node.nodeValue.split(/(\s+)/).forEach(function(part){
+          if (!part) return;
+          if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+          var outer = document.createElement('span'); outer.className = 'w';
+          var inner = document.createElement('span'); inner.textContent = part;
+          outer.appendChild(inner);
+          frag.appendChild(outer);
+        });
+        node.parentNode.replaceChild(frag, node);
+      });
+      el.dataset.split = '1';
+      var words = el.querySelectorAll('.w > span');
+      for (var i = 0; i < words.length; i++){
+        words[i].style.transitionDelay = Math.min(i, 16) * 48 + 'ms';
+      }
+    }
+
+    var headObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-in');
+        headObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.2, rootMargin: '0px 0px -40px 0px' });
+
+    function initHeadings(){
+      heads.forEach(function(el){
+        wrapWords(el);
+        // Anything already on screen reveals on the next frame rather than
+        // waiting for the observer — the hero headline must never depend on
+        // an IntersectionObserver callback to become visible.
+        if (el.getBoundingClientRect().top < window.innerHeight) {
+          requestAnimationFrame(function(){ el.classList.add('is-in'); });
+        } else {
+          headObserver.observe(el);
+        }
+      });
+    }
+    // Wait for the display face so words are measured at their real width.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(initHeadings);
+    else initHeadings();
+
+    // Safety net: if anything above stalls, show every headline anyway.
+    setTimeout(function(){ heads.forEach(function(el){ el.classList.add('is-in'); }); }, 1500);
+  }
+
+  /* ---- Parallax inside framed media ---------------------------------- */
+  if (ANIM && !isCoarse) {
+    var pxEls = [];
+    document.querySelectorAll('.tile .frame img, .page-hero-media .frame img, .figure-wide img, .designer .frame img')
+      .forEach(function(img){ img.setAttribute('data-parallax',''); pxEls.push(img); });
+
+    if (pxEls.length) {
+      onScrollFrame(function(){
+        var vh = window.innerHeight;
+        for (var i = 0; i < pxEls.length; i++){
+          var el = pxEls[i];
+          var r = el.getBoundingClientRect();
+          if (r.bottom < -200 || r.top > vh + 200) continue;
+          var progress = (r.top + r.height / 2 - vh / 2) / vh;   // -1 … 1
+          el.style.translate = '0 ' + (progress * -18).toFixed(1) + 'px';
+        }
+      });
+    }
+  }
+
+  /* ---- Scroll progress ----------------------------------------------- */
+  if (ANIM) {
+    var bar = document.createElement('div');
+    bar.className = 'scroll-progress';
+    document.body.appendChild(bar);
+    onScrollFrame(function(y){
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(y / max, 1) : 0) + ')';
+    });
+  }
+
+  /* ---- Magnetic controls --------------------------------------------- */
+  if (ANIM && !isCoarse) {
+    document.querySelectorAll('.btn-primary, .nav-toggle').forEach(function(btn){
+      btn.setAttribute('data-magnetic','');
+      btn.addEventListener('pointermove', function(ev){
+        var r = btn.getBoundingClientRect();
+        var dx = (ev.clientX - (r.left + r.width / 2)) * 0.22;
+        var dy = (ev.clientY - (r.top + r.height / 2)) * 0.32;
+        btn.style.translate = dx.toFixed(1) + 'px ' + dy.toFixed(1) + 'px';
+      });
+      btn.addEventListener('pointerleave', function(){ btn.style.translate = '0 0'; });
+    });
+  }
+
+  /* ---- Page transitions ----------------------------------------------- */
+  if (ANIM) {
+    var veil = document.createElement('div');
+    veil.className = 'page-fade';
+    document.body.appendChild(veil);
+
+    // Fade in from the veil on arrival.
+    document.documentElement.classList.add('is-entering');
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){ document.documentElement.classList.remove('is-entering'); });
+    });
+
+    document.addEventListener('click', function(ev){
+      if (ev.defaultPrevented || ev.button !== 0) return;
+      if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+      var a = ev.target.closest ? ev.target.closest('a') : null;
+      if (!a) return;
+      var href = a.getAttribute('href');
+      if (!href || href.charAt(0) === '#') return;
+      if (a.target === '_blank' || a.hasAttribute('download')) return;
+      if (/^(mailto:|tel:)/.test(href)) return;
+      var url;
+      try { url = new URL(href, location.href); } catch (e) { return; }
+      if (url.origin !== location.origin) return;
+      if (url.pathname === location.pathname) return;
+      ev.preventDefault();
+      document.documentElement.classList.add('is-leaving');
+      setTimeout(function(){ location.href = url.href; }, 420);
+    });
+
+    // Restore on back/forward (bfcache serves the old DOM with the veil up).
+    window.addEventListener('pageshow', function(){
+      document.documentElement.classList.remove('is-leaving');
+    });
+  }
+
 })();
