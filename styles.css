@@ -499,10 +499,7 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
   padding-bottom: calc(var(--sp-3) + env(safe-area-inset-bottom, 0px));
   box-shadow: 0 -8px 24px rgba(36,27,18,.1);
 }
-@media (max-width: 999px){
-  .mobile-cta-bar{ display:flex; }
-  .site-footer{ padding-bottom: 5.5rem; }
-}
+@media (max-width: 999px){ .mobile-cta-bar{ display:flex; } }
 .mobile-cta-bar__call{
   flex:0 0 auto; width:3rem; height:3rem; border-radius:50%;
   border:1px solid var(--line-strong); color: var(--espresso);
@@ -522,6 +519,9 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 
 /* ---------- Footer ---------- */
 .site-footer{ background: var(--noir); color: rgba(243,236,221,.85); padding-block: var(--sp-8) var(--sp-6); }
+/* Room for the fixed mobile-cta-bar so it doesn't sit over the
+   copyright/privacy line at the very bottom of the page. */
+@media (max-width: 999px){ .site-footer{ padding-bottom: calc(var(--sp-6) + 5.5rem); } }
 .footer-grid{ display:grid; gap: var(--sp-7); grid-template-columns:1.4fr repeat(3,1fr); }
 @media (max-width:860px){ .footer-grid{ grid-template-columns:repeat(2,1fr); } }
 @media (max-width:560px){ .footer-grid{ grid-template-columns:1fr; } }
