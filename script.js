@@ -113,9 +113,9 @@
         'FN:M&Z Design Chicago',
         'ORG:M&Z Design Chicago',
         'TEL;TYPE=WORK,VOICE:+17739681042',
-        'EMAIL:m&zdesign@yahoo.com',
+        'EMAIL:mzdesign14@yahoo.com',
         'ADR;TYPE=WORK:;;;Chicago;IL;;US',
-        'URL:https://mzdesignchicago.com/',
+        'URL:https://test.mzdesignchicago.com/',
         'END:VCARD'
       ];
       var blob = new Blob([lines.join('\r\n')], { type: 'text/vcard' });
@@ -167,7 +167,7 @@
           'Project notes:',
           message
         ].filter(Boolean);
-        return 'mailto:m&zdesign@yahoo.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(bodyLines.join('\n'));
+        return 'mailto:mzdesign14@yahoo.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(bodyLines.join('\n'));
       }
 
       if (submitBtn) submitBtn.disabled = true;
