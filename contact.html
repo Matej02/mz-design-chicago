@@ -122,6 +122,10 @@
 
         <div data-reveal>
           <form id="inquiryForm" novalidate>
+            <div class="visually-hidden" aria-hidden="true">
+              <label for="f-company">Company</label>
+              <input id="f-company" name="company" type="text" tabindex="-1" autocomplete="off">
+            </div>
             <div class="form-grid">
               <div class="field span-2">
                 <label for="f-name">Full name</label>
@@ -182,7 +186,7 @@
               Send Inquiry
             </button>
             <p class="form-status" id="inquiryStatus" role="status"></p>
-            <p class="form-note">Sending opens your own email app with these details already filled in, addressed to m&amp;zdesign@yahoo.com — nothing is sent automatically in the background, and nothing is stored on this site.</p>
+            <p class="form-note">Sent directly to our studio inbox. We use these details only to respond to your inquiry — nothing is shared, sold, or stored beyond that.</p>
           </form>
         </div>
 

@@ -130,7 +130,9 @@
     });
   }
 
-  // Inquiry form — composes a pre-filled email, no backend required
+  // Inquiry form — submits to /api/inquiry (Resend). If the request fails
+  // for any reason (network down, endpoint misconfigured), we fall back to
+  // a pre-filled mailto: so the inquiry is never simply lost.
   var inquiryForm = document.getElementById('inquiryForm');
   if (inquiryForm) {
     inquiryForm.addEventListener('submit', function(ev){
@@ -144,27 +146,53 @@
       var budget = get('budget');
       var timeline = get('timeline');
       var message = get('message');
+      var company = get('company'); // honeypot, always empty for real visitors
 
-      var subject = 'Design inquiry — ' + name + (projectType ? ' (' + projectType + ')' : '');
-      var bodyLines = [
-        'Name: ' + name,
-        'Best way to reach you: ' + contact,
-        projectType ? 'Project type: ' + projectType : '',
-        rooms ? 'Rooms / areas: ' + rooms : '',
-        budget ? 'Approximate budget: ' + budget : '',
-        timeline ? 'Timeline: ' + timeline : '',
-        '',
-        'Project notes:',
-        message
-      ].filter(Boolean);
-
-      var mailto = 'mailto:m&zdesign@yahoo.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(bodyLines.join('\n'));
       var statusEl = document.getElementById('inquiryStatus');
+      var submitBtn = inquiryForm.querySelector('button[type="submit"]');
+
+      function mailtoFallback(){
+        var subject = 'Design inquiry — ' + name + (projectType ? ' (' + projectType + ')' : '');
+        var bodyLines = [
+          'Name: ' + name,
+          'Best way to reach you: ' + contact,
+          projectType ? 'Project type: ' + projectType : '',
+          rooms ? 'Rooms / areas: ' + rooms : '',
+          budget ? 'Approximate budget: ' + budget : '',
+          timeline ? 'Timeline: ' + timeline : '',
+          '',
+          'Project notes:',
+          message
+        ].filter(Boolean);
+        return 'mailto:m&zdesign@yahoo.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(bodyLines.join('\n'));
+      }
+
+      if (submitBtn) submitBtn.disabled = true;
       if (statusEl){
-        statusEl.textContent = 'Opening your email app with these details filled in — just hit send.';
+        statusEl.textContent = 'Sending your inquiry…';
         statusEl.classList.add('is-visible');
       }
-      window.location.href = mailto;
+
+      fetch('/api/inquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, contact: contact, projectType: projectType, rooms: rooms, budget: budget, timeline: timeline, message: message, company: company })
+      }).then(function(resp){
+        if (!resp.ok) throw new Error('send failed');
+        return resp.json();
+      }).then(function(data){
+        if (!data || !data.ok) throw new Error('send failed');
+        inquiryForm.reset();
+        if (statusEl){
+          statusEl.textContent = "Thank you — we've received your inquiry and will be in touch soon.";
+        }
+      }).catch(function(){
+        if (statusEl){
+          statusEl.innerHTML = 'Something went wrong sending that automatically. <a href="' + mailtoFallback() + '">Click here to send it as an email instead</a>.';
+        }
+      }).finally(function(){
+        if (submitBtn) submitBtn.disabled = false;
+      });
     });
   }
 
