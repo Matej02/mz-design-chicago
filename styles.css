@@ -337,6 +337,16 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 .split{ display:grid; gap: var(--sp-7); grid-template-columns:1fr; align-items:center; }
 .split--start{ align-items:start; }
 .split--wide-first{ grid-template-columns:1fr; }
+
+/* Long-form legal/policy text: single readable column, generous spacing
+   between headings so a wall of policy text still breathes. */
+.legal{ max-width: var(--measure); }
+.legal h2{ font-size: var(--fs-h3); margin-top: var(--sp-7); margin-bottom: var(--sp-3); }
+.legal h2:first-child{ margin-top:0; }
+.legal p{ color: var(--espresso-soft); margin-bottom: var(--sp-4); }
+.legal ul{ color: var(--espresso-soft); margin: 0 0 var(--sp-4); padding-left: 1.25em; }
+.legal li + li{ margin-top: var(--sp-3); }
+.legal li strong{ color: var(--espresso); }
 @media (min-width: 900px){
   .split{ grid-template-columns:1fr 1fr; gap: var(--sp-8); }
   .split--wide-first{ grid-template-columns:1.15fr 1fr; }
