@@ -24,8 +24,9 @@ app.use((req, res, next) => {
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()');
   res.setHeader(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-    "font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; " +
+    "default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+    "font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com; " +
+    "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; form-action 'self'; " +
     "base-uri 'self'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
   );
   next();
@@ -39,9 +40,15 @@ app.get(/^\/(.+)\.html$/, (req, res, next) => {
   res.redirect(308, req.path.slice(0, -5));
 });
 
+// A year of immutable caching sounds right for "assets", but these files
+// get overwritten in place under the same name (icons.svg, the sharpened
+// photos) rather than getting content-hashed filenames — an immutable
+// cache silently keeps serving stale bytes after an edit like that, which
+// is exactly what happened on the Vercel deploy with icons.svg. Short
+// max-age with revalidation instead; the HTML/CSS/JS already carry their
+// own ?v= cache-busting query string.
 app.use('/assets', express.static(path.join(PUBLIC_DIR, 'assets'), {
-  maxAge: '1y',
-  immutable: true
+  maxAge: '1h'
 }));
 
 // app.all (not app.post): api/inquiry.js does its own method check and

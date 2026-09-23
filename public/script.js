@@ -1,6 +1,15 @@
 (function(){
   'use strict';
 
+  // Google Analytics (GA4) — the loader tag is in <head> of every page;
+  // this is just the init call, kept out of an inline <script> so the
+  // page's CSP can stay script-src 'self' + googletagmanager.com only,
+  // with no 'unsafe-inline' needed.
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ window.dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-YE0TQJKPHE');
+
   // Header scroll state
   var header = document.querySelector('.site-header');
   function onScroll(){

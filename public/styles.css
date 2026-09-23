@@ -337,6 +337,16 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 .split{ display:grid; gap: var(--sp-7); grid-template-columns:1fr; align-items:center; }
 .split--start{ align-items:start; }
 .split--wide-first{ grid-template-columns:1fr; }
+
+/* Long-form legal/policy text: single readable column, generous spacing
+   between headings so a wall of policy text still breathes. */
+.legal{ max-width: var(--measure); }
+.legal h2{ font-size: var(--fs-h3); margin-top: var(--sp-7); margin-bottom: var(--sp-3); }
+.legal h2:first-child{ margin-top:0; }
+.legal p{ color: var(--espresso-soft); margin-bottom: var(--sp-4); }
+.legal ul{ color: var(--espresso-soft); margin: 0 0 var(--sp-4); padding-left: 1.25em; }
+.legal li + li{ margin-top: var(--sp-3); }
+.legal li strong{ color: var(--espresso); }
 @media (min-width: 900px){
   .split{ grid-template-columns:1fr 1fr; gap: var(--sp-8); }
   .split--wide-first{ grid-template-columns:1.15fr 1fr; }
@@ -455,6 +465,16 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 }
 .field input:focus, .field select:focus, .field textarea:focus{ outline:none; border-color: var(--gold-deep); box-shadow:0 0 0 3px rgba(173,135,73,.15); }
 .field textarea{ resize:vertical; min-height:8rem; }
+/* Selects default to the OS's own dropdown chrome, which reads as a
+   generic system form next to everything else here — replace it with a
+   custom chevron in the site's own gold rather than leaving it bare. */
+.field select{
+  appearance:none; -webkit-appearance:none; -moz-appearance:none;
+  padding-right: 2.75em; cursor:pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2386662F' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position: right 1.1em center; background-size:0.7em;
+}
+.field select::-ms-expand{ display:none; }
 .form-status{ display:none; margin-top: var(--sp-4); font-size: var(--fs-small); color: var(--gold-deep); }
 .form-status.is-visible{ display:block; }
 .form-note{ margin-top: var(--sp-4); font-size: var(--fs-label); color: var(--espresso-faint); line-height:1.6; }
@@ -467,8 +487,75 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 .contact-line .ic{ width:2.4rem; height:2.4rem; border-radius:50%; background: var(--gold-pale); color: var(--gold-deep); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .contact-line a:hover{ color: var(--gold-deep); }
 
+/* ---------- Mobile sticky CTA bar ----------
+   Below 1000px the header's own CTA button is hidden (nav-cta), leaving
+   nothing persistent to tap without opening the drawer. This floats a
+   thin bar above the fold at all times instead. */
+.mobile-cta-bar{
+  display:none; position:fixed; left:0; right:0; bottom:0; z-index:120;
+  align-items:center; gap: var(--sp-3);
+  background: var(--ivory); border-top:1px solid var(--line-strong);
+  padding: var(--sp-3) var(--sp-5);
+  padding-bottom: calc(var(--sp-3) + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -8px 24px rgba(36,27,18,.1);
+}
+@media (max-width: 999px){ .mobile-cta-bar{ display:flex; } }
+.mobile-cta-bar__call{
+  flex:0 0 auto; width:3rem; height:3rem; border-radius:50%;
+  border:1px solid var(--line-strong); color: var(--espresso);
+  display:flex; align-items:center; justify-content:center;
+  transition: background-color .35s var(--ease), color .35s var(--ease), border-color .35s var(--ease);
+}
+.mobile-cta-bar__call:hover{ border-color: var(--espresso); background: var(--espresso); color: var(--ivory); }
+.mobile-cta-bar .btn{ flex:1 1 auto; }
+
+/* ---------- Testimonial placeholder ---------- */
+.testimonial-placeholder{
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap: var(--sp-3);
+  text-align:center; padding: var(--sp-8) var(--sp-6); border:1px dashed var(--line-strong);
+  color: var(--espresso-faint); font-size: var(--fs-small); max-width:42rem; margin-inline:auto;
+}
+.testimonial-placeholder strong{ font-family: var(--font-display); font-size:1.3rem; font-style:italic; color: var(--espresso-soft); line-height:1.4; }
+
+/* ---------- Review cards (preview) ----------
+   Sample layout for a future reviews section — content is placeholder,
+   never presented as real. Keep the preview-tag visible whenever this
+   markup is in use. */
+.preview-tag{
+  display:inline-block; margin-top: var(--sp-4); padding:.4em 1em;
+  border:1px solid var(--gold-deep); border-radius: var(--radius-pill);
+  font-size: var(--fs-label); letter-spacing:.08em; text-transform:uppercase;
+  color: var(--gold-deep); font-weight:600;
+}
+.review-grid{ display:grid; gap: var(--sp-5); grid-template-columns:repeat(3,1fr); margin-top: var(--sp-7); }
+@media (max-width:900px){ .review-grid{ grid-template-columns:1fr; max-width:32rem; margin-inline:auto; } }
+.review-card{ background: var(--ivory-raised); border:1px solid var(--line); padding: var(--sp-6); display:flex; flex-direction:column; gap: var(--sp-4); }
+.review-card__head{ display:flex; align-items:center; gap: var(--sp-3); }
+.review-card__avatar{
+  width:2.75rem; height:2.75rem; border-radius:50%; flex:0 0 auto; color:#fff;
+  display:flex; align-items:center; justify-content:center; font-family: var(--font-display); font-weight:600; font-size:1.05rem;
+}
+.review-card__name{ display:block; font-size: var(--fs-small); font-weight:600; }
+.review-card__stars{ color: var(--gold); font-size:.8rem; letter-spacing:1px; }
+.review-card p{ font-size: var(--fs-small); color: var(--espresso-soft); margin:0; }
+.review-card__foot{ display:flex; align-items:center; gap: var(--sp-2); font-size: var(--fs-label); color: var(--espresso-faint); }
+.review-card__foot svg{ width:1rem; height:1rem; }
+
+.g-rating{
+  display:inline-flex; align-items:center; gap: var(--sp-3); margin-top: var(--sp-4);
+  background: var(--ivory-raised); border:1px solid var(--line-strong); border-radius: var(--radius-pill);
+  padding:.5em 1.1em .5em .6em;
+}
+.g-rating svg{ width:1.3rem; height:1.3rem; }
+.g-rating__score{ font-family: var(--font-display); font-weight:600; font-size:1.1rem; }
+.g-rating__stars{ color: var(--gold); font-size:.8rem; letter-spacing:1px; }
+.g-rating__count{ font-size: var(--fs-label); color: var(--espresso-faint); }
+
 /* ---------- Footer ---------- */
 .site-footer{ background: var(--noir); color: rgba(243,236,221,.85); padding-block: var(--sp-8) var(--sp-6); }
+/* Room for the fixed mobile-cta-bar so it doesn't sit over the
+   copyright/privacy line at the very bottom of the page. */
+@media (max-width: 999px){ .site-footer{ padding-bottom: calc(var(--sp-6) + 5.5rem); } }
 .footer-grid{ display:grid; gap: var(--sp-7); grid-template-columns:1.4fr repeat(3,1fr); }
 @media (max-width:860px){ .footer-grid{ grid-template-columns:repeat(2,1fr); } }
 @media (max-width:560px){ .footer-grid{ grid-template-columns:1fr; } }
@@ -481,7 +568,14 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 .footer-social{ display:flex; gap: var(--sp-3); margin-top: var(--sp-5); }
 .footer-social a{ width:2.4rem; height:2.4rem; border:1px solid var(--noir-line); border-radius:50%; display:flex; align-items:center; justify-content:center; transition: border-color .35s var(--ease), color .35s var(--ease); }
 .footer-social a:hover{ border-color: var(--gold-light); color: var(--gold-light); }
-.footer-bottom{ margin-top: var(--sp-8); padding-top: var(--sp-5); border-top:1px solid var(--noir-line); display:flex; flex-wrap:wrap; gap: var(--sp-4); justify-content:space-between; font-size: var(--fs-label); color: rgba(243,236,221,.5); line-height:1.7; }
+.footer-bottom{
+  margin-top: var(--sp-8); padding-top: var(--sp-6); border-top:1px solid var(--noir-line);
+  display:flex; flex-direction:column; gap: var(--sp-3);
+}
+.footer-bottom > span:first-child{ font-size: var(--fs-small); color: rgba(243,236,221,.72); }
+.footer-bottom > span:first-child a{ color:inherit; text-decoration:underline; text-underline-offset:2px; text-decoration-color: rgba(243,236,221,.35); }
+.footer-bottom > span:first-child a:hover{ color:#fff; text-decoration-color:currentColor; }
+.footer-legal{ display:block; max-width:46rem; font-size: var(--fs-label); color: rgba(243,236,221,.42); line-height:1.7; }
 
 /* ---------- Reveal on scroll ----------
    Visible by default; the hidden state only exists once JS proves it can
