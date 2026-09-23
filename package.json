@@ -1,0 +1,15 @@
+{
+  "name": "mz-design-chicago",
+  "version": "1.0.0",
+  "private": true,
+  "description": "M&Z Design Chicago — static site + inquiry endpoint, served via Express for Render.",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

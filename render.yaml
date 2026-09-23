@@ -1,0 +1,19 @@
+# Render infra-as-code — https://render.com/docs/blueprint-spec
+#
+# Connect this repo to Render as a Blueprint (New + > Blueprint) pointed at
+# the `render` branch, so it never touches the `main` branch the Vercel
+# deploy tracks. Render reads this file and provisions the service below;
+# it still prompts once for RESEND_API_KEY's value since that is a secret
+# and is deliberately not stored in git.
+services:
+  - type: web
+    name: mz-design-chicago
+    runtime: node
+    plan: starter
+    branch: render
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: RESEND_API_KEY
+        sync: false
