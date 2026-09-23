@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /api/
 
-Sitemap: https://mzdesignchicago.com/sitemap.xml
+Sitemap: https://test.mzdesignchicago.com/sitemap.xml

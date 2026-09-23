@@ -135,6 +135,9 @@
   // a pre-filled mailto: so the inquiry is never simply lost.
   var inquiryForm = document.getElementById('inquiryForm');
   if (inquiryForm) {
+    var tsField = document.getElementById('f-ts');
+    if (tsField) tsField.value = Date.now();
+
     inquiryForm.addEventListener('submit', function(ev){
       ev.preventDefault();
       var f = inquiryForm.elements;
@@ -176,7 +179,7 @@
       fetch('/api/inquiry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name, contact: contact, projectType: projectType, rooms: rooms, budget: budget, timeline: timeline, message: message, company: company })
+        body: JSON.stringify({ name: name, contact: contact, projectType: projectType, rooms: rooms, budget: budget, timeline: timeline, message: message, company: company, ts: tsField ? tsField.value : '' })
       }).then(function(resp){
         if (!resp.ok) throw new Error('send failed');
         return resp.json();
