@@ -568,7 +568,14 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 .footer-social{ display:flex; gap: var(--sp-3); margin-top: var(--sp-5); }
 .footer-social a{ width:2.4rem; height:2.4rem; border:1px solid var(--noir-line); border-radius:50%; display:flex; align-items:center; justify-content:center; transition: border-color .35s var(--ease), color .35s var(--ease); }
 .footer-social a:hover{ border-color: var(--gold-light); color: var(--gold-light); }
-.footer-bottom{ margin-top: var(--sp-8); padding-top: var(--sp-5); border-top:1px solid var(--noir-line); display:flex; flex-wrap:wrap; gap: var(--sp-4); justify-content:space-between; font-size: var(--fs-label); color: rgba(243,236,221,.5); line-height:1.7; }
+.footer-bottom{
+  margin-top: var(--sp-8); padding-top: var(--sp-6); border-top:1px solid var(--noir-line);
+  display:flex; flex-direction:column; gap: var(--sp-3);
+}
+.footer-bottom > span:first-child{ font-size: var(--fs-small); color: rgba(243,236,221,.72); }
+.footer-bottom > span:first-child a{ color:inherit; text-decoration:underline; text-underline-offset:2px; text-decoration-color: rgba(243,236,221,.35); }
+.footer-bottom > span:first-child a:hover{ color:#fff; text-decoration-color:currentColor; }
+.footer-legal{ display:block; max-width:46rem; font-size: var(--fs-label); color: rgba(243,236,221,.42); line-height:1.7; }
 
 /* ---------- Reveal on scroll ----------
    Visible by default; the hidden state only exists once JS proves it can
