@@ -517,6 +517,28 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 }
 .testimonial-placeholder strong{ font-family: var(--font-display); font-size:1.3rem; font-style:italic; color: var(--espresso-soft); line-height:1.4; }
 
+/* ---------- Review cards (preview) ----------
+   Sample layout for a future reviews section — content is placeholder,
+   never presented as real. Keep the preview-tag visible whenever this
+   markup is in use. */
+.preview-tag{
+  display:inline-block; margin-top: var(--sp-4); padding:.4em 1em;
+  border:1px solid var(--gold-deep); border-radius: var(--radius-pill);
+  font-size: var(--fs-label); letter-spacing:.08em; text-transform:uppercase;
+  color: var(--gold-deep); font-weight:600;
+}
+.review-grid{ display:grid; gap: var(--sp-5); grid-template-columns:repeat(3,1fr); margin-top: var(--sp-7); }
+@media (max-width:900px){ .review-grid{ grid-template-columns:1fr; max-width:32rem; margin-inline:auto; } }
+.review-card{ background: var(--ivory-raised); border:1px solid var(--line); padding: var(--sp-6); display:flex; flex-direction:column; gap: var(--sp-4); }
+.review-card__head{ display:flex; align-items:center; gap: var(--sp-3); }
+.review-card__avatar{
+  width:2.75rem; height:2.75rem; border-radius:50%; flex:0 0 auto; color:#fff;
+  display:flex; align-items:center; justify-content:center; font-family: var(--font-display); font-weight:600; font-size:1.05rem;
+}
+.review-card__name{ display:block; font-size: var(--fs-small); font-weight:600; }
+.review-card__stars{ color: var(--gold); font-size:.8rem; letter-spacing:1px; }
+.review-card p{ font-size: var(--fs-small); color: var(--espresso-soft); margin:0; }
+
 /* ---------- Footer ---------- */
 .site-footer{ background: var(--noir); color: rgba(243,236,221,.85); padding-block: var(--sp-8) var(--sp-6); }
 /* Room for the fixed mobile-cta-bar so it doesn't sit over the
