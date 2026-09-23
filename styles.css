@@ -613,6 +613,11 @@ body.body-noir{ background: var(--noir); }
 .hscroll__pin{ position:sticky; top:0; height:100svh; display:flex; flex-direction:column;
   overflow:hidden; }
 .hscroll__head{ flex:0 0 auto; padding-block: var(--sp-7) var(--sp-5); }
+/* The gallery track runs full-bleed to the viewport edge (for the scroll
+   effect), so the header above it must match that same edge instead of the
+   centered, max-width .container it inherits by default — otherwise the
+   heading drifts inward relative to the photos on wide screens. */
+.hscroll__head .container{ max-width:none; margin-inline:0; padding-inline: var(--sp-7); }
 .hscroll__track{ flex:1 1 auto; min-height:0; display:flex; align-items:center;
   gap: var(--sp-5); padding-inline: var(--sp-7); will-change:transform; }
 .hscroll__item{ flex:0 0 auto; width:min(34vw,460px); height:80%; }
