@@ -538,6 +538,18 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 .review-card__name{ display:block; font-size: var(--fs-small); font-weight:600; }
 .review-card__stars{ color: var(--gold); font-size:.8rem; letter-spacing:1px; }
 .review-card p{ font-size: var(--fs-small); color: var(--espresso-soft); margin:0; }
+.review-card__foot{ display:flex; align-items:center; gap: var(--sp-2); font-size: var(--fs-label); color: var(--espresso-faint); }
+.review-card__foot svg{ width:1rem; height:1rem; }
+
+.g-rating{
+  display:inline-flex; align-items:center; gap: var(--sp-3); margin-top: var(--sp-4);
+  background: var(--ivory-raised); border:1px solid var(--line-strong); border-radius: var(--radius-pill);
+  padding:.5em 1.1em .5em .6em;
+}
+.g-rating svg{ width:1.3rem; height:1.3rem; }
+.g-rating__score{ font-family: var(--font-display); font-weight:600; font-size:1.1rem; }
+.g-rating__stars{ color: var(--gold); font-size:.8rem; letter-spacing:1px; }
+.g-rating__count{ font-size: var(--fs-label); color: var(--espresso-faint); }
 
 /* ---------- Footer ---------- */
 .site-footer{ background: var(--noir); color: rgba(243,236,221,.85); padding-block: var(--sp-8) var(--sp-6); }
