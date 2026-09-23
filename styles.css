@@ -487,6 +487,39 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 .contact-line .ic{ width:2.4rem; height:2.4rem; border-radius:50%; background: var(--gold-pale); color: var(--gold-deep); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .contact-line a:hover{ color: var(--gold-deep); }
 
+/* ---------- Mobile sticky CTA bar ----------
+   Below 1000px the header's own CTA button is hidden (nav-cta), leaving
+   nothing persistent to tap without opening the drawer. This floats a
+   thin bar above the fold at all times instead. */
+.mobile-cta-bar{
+  display:none; position:fixed; left:0; right:0; bottom:0; z-index:120;
+  align-items:center; gap: var(--sp-3);
+  background: var(--ivory); border-top:1px solid var(--line-strong);
+  padding: var(--sp-3) var(--sp-5);
+  padding-bottom: calc(var(--sp-3) + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -8px 24px rgba(36,27,18,.1);
+}
+@media (max-width: 999px){
+  .mobile-cta-bar{ display:flex; }
+  .site-footer{ padding-bottom: 5.5rem; }
+}
+.mobile-cta-bar__call{
+  flex:0 0 auto; width:3rem; height:3rem; border-radius:50%;
+  border:1px solid var(--line-strong); color: var(--espresso);
+  display:flex; align-items:center; justify-content:center;
+  transition: background-color .35s var(--ease), color .35s var(--ease), border-color .35s var(--ease);
+}
+.mobile-cta-bar__call:hover{ border-color: var(--espresso); background: var(--espresso); color: var(--ivory); }
+.mobile-cta-bar .btn{ flex:1 1 auto; }
+
+/* ---------- Testimonial placeholder ---------- */
+.testimonial-placeholder{
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap: var(--sp-3);
+  text-align:center; padding: var(--sp-8) var(--sp-6); border:1px dashed var(--line-strong);
+  color: var(--espresso-faint); font-size: var(--fs-small); max-width:42rem; margin-inline:auto;
+}
+.testimonial-placeholder strong{ font-family: var(--font-display); font-size:1.3rem; font-style:italic; color: var(--espresso-soft); line-height:1.4; }
+
 /* ---------- Footer ---------- */
 .site-footer{ background: var(--noir); color: rgba(243,236,221,.85); padding-block: var(--sp-8) var(--sp-6); }
 .footer-grid{ display:grid; gap: var(--sp-7); grid-template-columns:1.4fr repeat(3,1fr); }
