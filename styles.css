@@ -390,6 +390,10 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 .section--paper .original-card p, .section:not(.section--noir) .original-card p{ color: var(--espresso-soft); }
 .original-card .maker{ margin-top: var(--sp-4); font-family: var(--font-display); font-style:italic; font-size: var(--fs-small); color: var(--gold-light); }
 .plaque{ display:inline-flex; align-items:center; gap: var(--sp-3); margin-top: var(--sp-6); padding: var(--sp-3) var(--sp-5); border:1px solid var(--gold-deep); border-radius: var(--radius-pill); font-size: var(--fs-label); letter-spacing:0.08em; text-transform:uppercase; color: var(--gold-light); }
+.original-card .price-note{ margin-top: var(--sp-4); font-size: var(--fs-small); color: rgba(243,236,221,.6); }
+.original-card .price-note strong{ color: var(--gold-light); font-weight:600; }
+.section--paper .original-card .price-note, .section:not(.section--noir) .original-card .price-note{ color: var(--espresso-faint); }
+.section--paper .original-card .price-note strong, .section:not(.section--noir) .original-card .price-note strong{ color: var(--gold-deep); }
 
 .signature-mark{ width:6.5rem; height:6.5rem; margin: var(--sp-7) auto; border:1px solid var(--gold-light); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family: var(--font-display); font-size:1.15rem; color: var(--gold-light); }
 
