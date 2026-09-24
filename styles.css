@@ -395,6 +395,12 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 .section--paper .original-card .price-note, .section:not(.section--noir) .original-card .price-note{ color: var(--espresso-faint); }
 .section--paper .original-card .price-note strong, .section:not(.section--noir) .original-card .price-note strong{ color: var(--gold-deep); }
 
+.original-gallery{ padding-bottom: var(--sp-8); }
+.original-gallery__label{ font-size: var(--fs-label); letter-spacing:.04em; color: rgba(243,236,221,.5); margin-bottom: var(--sp-4); }
+.section--paper .original-gallery__label, .section:not(.section--noir) .original-gallery__label{ color: var(--espresso-faint); }
+.original-gallery__grid{ display:grid; gap: var(--sp-4); grid-template-columns:repeat(3,1fr); }
+@media (max-width:640px){ .original-gallery__grid{ grid-template-columns:1fr 1fr; } }
+
 .signature-mark{ width:6.5rem; height:6.5rem; margin: var(--sp-7) auto; border:1px solid var(--gold-light); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family: var(--font-display); font-size:1.15rem; color: var(--gold-light); }
 
 /* Inspiration → invention flow */
@@ -427,10 +433,6 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 .designer{ display:grid; gap: var(--sp-7); grid-template-columns:1fr; align-items:center; }
 @media (min-width: 900px){ .designer{ grid-template-columns: 0.8fr 1fr; gap: var(--sp-8); } }
 .designer .frame{ background: var(--stone); }
-.designer-placeholder{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap: var(--sp-3);
-  height:100%; min-height:22rem; border:1px dashed var(--line-strong); color: var(--espresso-faint);
-  text-align:center; padding: var(--sp-6); font-size: var(--fs-small); }
-.designer-placeholder strong{ font-family: var(--font-display); font-size:1.3rem; color: var(--espresso-soft); }
 .designer-quote{ font-family: var(--font-display); font-size: var(--fs-h3); font-style:italic; color: var(--espresso-soft); margin-top: var(--sp-5); }
 
 /* ---------- Before / after ---------- */
