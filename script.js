@@ -10,6 +10,17 @@
   gtag('js', new Date());
   gtag('config', 'G-YE0TQJKPHE');
 
+  // Content protection — deters casual right-click-save of photos and
+  // copy-pasting marketing text. Doesn't stop dev tools, view-source, or
+  // a screenshot; nothing client-side can. Real protection is the
+  // copyright notice in the footer. Form fields are exempt so people can
+  // still right-click to paste into the inquiry form.
+  document.addEventListener('contextmenu', function(ev){
+    var tag = ev.target.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    ev.preventDefault();
+  });
+
   // Header scroll state
   var header = document.querySelector('.site-header');
   function onScroll(){
