@@ -674,11 +674,11 @@ body.body-noir{ background: var(--noir); }
 /* Material marquee — the studio's own palette, running as a band */
 .marquee{ overflow:hidden; border-block:1px solid var(--line); padding-block: var(--sp-5);
   background: var(--ivory-raised); }
-.marquee__track{ display:flex; width:max-content; gap: var(--sp-6);
+.marquee__track{ display:flex; width:max-content;
   font-family: var(--font-display); font-size: clamp(1.4rem,1rem+1.6vw,2.4rem);
   color: var(--espresso-faint); white-space:nowrap; }
 .js-anim .marquee__track{ animation: marquee 38s linear infinite; }
-.marquee__track span{ display:inline-flex; align-items:center; gap: var(--sp-6); }
+.marquee__track span{ display:inline-flex; align-items:center; gap: var(--sp-6); margin-right: var(--sp-6); }
 .marquee__track i{ font-style:normal; color: var(--gold); }
 @keyframes marquee{ to{ transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce){ .js-anim .marquee__track{ animation:none; } }
