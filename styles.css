@@ -680,7 +680,7 @@ body.body-noir{ background: var(--noir); }
 .marquee__track{ display:flex; width:max-content;
   font-family: var(--font-display); font-size: clamp(1.4rem,1rem+1.6vw,2.4rem);
   color: var(--espresso-faint); white-space:nowrap; }
-.js-anim .marquee__track{ animation: marquee 38s linear infinite; }
+.js-anim .marquee__track{ animation: marquee 152s linear infinite; }
 .marquee__track span{ display:inline-flex; align-items:center; gap: var(--sp-6); margin-right: var(--sp-6); }
 .marquee__track i{ font-style:normal; color: var(--gold); }
 @keyframes marquee{ to{ transform: translateX(-50%); } }
