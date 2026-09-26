@@ -421,7 +421,10 @@
       if (!t.closest) return;
       if (t.closest('.tile, .hscroll__item, .figure-wide, .compare')) {
         cur.classList.add('is-media'); cur.classList.remove('is-link');
-        label.textContent = t.closest('.compare') ? 'Drag' : 'View';
+        // Only .compare actually does something on interaction (drag to reveal);
+        // the rest are plain photographs, so the label stays empty rather than
+        // promising a click action ("View") that doesn't exist.
+        label.textContent = t.closest('.compare') ? 'Drag' : '';
       } else if (t.closest('a, button, summary, input, textarea, select')) {
         cur.classList.add('is-link'); cur.classList.remove('is-media');
       } else {
