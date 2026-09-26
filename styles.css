@@ -388,6 +388,8 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 .original-card:last-of-type{ border-bottom:1px solid var(--noir-line); }
 @media (min-width: 900px){
   .original-card{ grid-template-columns:1.05fr 1fr; gap: var(--sp-8); }
+  .original-card--solo{ grid-template-columns:1fr; }
+  .original-card--solo .original-copy{ max-width: var(--measure); }
   .original-card.is-reverse .original-copy{ order:2; }
   .original-card.is-reverse .frame{ order:1; }
 }
