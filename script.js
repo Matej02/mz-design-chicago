@@ -389,46 +389,8 @@
 
 
   /* ======================================================================
-     SIGNATURE LAYER — inertia scroll, cursor, intro, horizontal gallery
+     SIGNATURE LAYER — cursor, intro, horizontal gallery
      ====================================================================== */
-
-  /* ---- Inertia scroll -------------------------------------------------
-     Drives window.scrollTo rather than transforming a wrapper, so
-     position:sticky, anchors, find-in-page and the scrollbar all keep
-     working. Desktop pointers only. */
-  var velocity = 0;
-  if (ANIM && !isCoarse) {
-    var targetY = window.scrollY, currentY = targetY, running = false, lerp = 0.16;
-    function maxScroll(){ return document.documentElement.scrollHeight - window.innerHeight; }
-    function tick(){
-      var diff = targetY - currentY;
-      velocity = diff;
-      if (Math.abs(diff) < 0.4) { currentY = targetY; running = false; velocity = 0; applyVelocity(); return; }
-      currentY += diff * lerp;
-      window.scrollTo(0, currentY);
-      applyVelocity();
-      requestAnimationFrame(tick);
-    }
-    function start(){ if (!running) { running = true; requestAnimationFrame(tick); } }
-    window.addEventListener('wheel', function(ev){
-      if (ev.ctrlKey) return;                       // pinch-zoom
-      if (drawer && drawer.classList.contains('is-open')) return;
-      ev.preventDefault();
-      targetY = Math.max(0, Math.min(targetY + ev.deltaY, maxScroll()));
-      start();
-    }, { passive: false });
-    // Keep in sync when scrolled by any other means.
-    window.addEventListener('scroll', function(){
-      if (!running) { targetY = currentY = window.scrollY; }
-    }, { passive: true });
-    window.addEventListener('resize', function(){ targetY = currentY = window.scrollY; });
-  }
-
-  /* ---- Scroll velocity ------------------------------------------------
-     Deliberately writes nothing to the DOM. The previous version skewed
-     every framed element each frame, which re-rasterised the canvases
-     behind them; the warp is now a shader uniform in webgl.js. */
-  function applyVelocity(){ /* no-op: handled on the GPU */ }
 
   /* ---- Custom cursor -------------------------------------------------- */
   function initCursor(){
