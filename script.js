@@ -421,10 +421,7 @@
       if (!t.closest) return;
       if (t.closest('.tile, .hscroll__item, .figure-wide, .compare')) {
         cur.classList.add('is-media'); cur.classList.remove('is-link');
-        // Only .compare actually does something on interaction (drag to reveal);
-        // the rest are plain photographs, so the label stays empty rather than
-        // promising a click action ("View") that doesn't exist.
-        label.textContent = t.closest('.compare') ? 'Drag' : '';
+        label.textContent = t.closest('.compare') ? 'Drag' : 'View';
       } else if (t.closest('a, button, summary, input, textarea, select')) {
         cur.classList.add('is-link'); cur.classList.remove('is-media');
       } else {
@@ -441,6 +438,61 @@
       initCursor();
     });
   }
+
+  /* ---- Photo lightbox ---------------------------------------------------
+     Click any gallery photo (Selected Visions, portfolio mosaic tiles, the
+     wide feature figures) to open it large. Not gated behind ANIM/isCoarse:
+     this is a real feature, not decoration, so it works with reduced motion
+     and on touch too — only the fade transition is skipped for reduced
+     motion, via CSS. .compare is excluded: dragging it is its own action. */
+  var lightbox = null, lastFocused = null;
+  function buildLightbox(){
+    lightbox = document.createElement('div');
+    lightbox.className = 'lightbox';
+    lightbox.setAttribute('role', 'dialog');
+    lightbox.setAttribute('aria-modal', 'true');
+    lightbox.setAttribute('aria-label', 'Photo');
+    lightbox.innerHTML =
+      '<button type="button" class="lightbox__close" aria-label="Close">' +
+        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 5l14 14M19 5L5 19"/></svg>' +
+      '</button>' +
+      '<img class="lightbox__img" alt="">';
+    document.body.appendChild(lightbox);
+    lightbox.addEventListener('click', function(ev){
+      if (ev.target === lightbox) closeLightbox();
+    });
+    lightbox.querySelector('.lightbox__close').addEventListener('click', closeLightbox);
+  }
+  function openLightbox(img){
+    if (!lightbox) buildLightbox();
+    var full = img.currentSrc || img.src;
+    if (!full) return;
+    lastFocused = document.activeElement;
+    lightbox.querySelector('.lightbox__img').src = full;
+    lightbox.querySelector('.lightbox__img').alt = img.alt || '';
+    lightbox.classList.add('is-open');
+    document.documentElement.classList.add('lightbox-open');
+    lightbox.querySelector('.lightbox__close').focus();
+  }
+  function closeLightbox(){
+    if (!lightbox) return;
+    lightbox.classList.remove('is-open');
+    document.documentElement.classList.remove('lightbox-open');
+    if (lastFocused && lastFocused.focus) lastFocused.focus();
+  }
+  document.addEventListener('click', function(ev){
+    var t = ev.target;
+    if (!t.closest) return;
+    var host = t.closest('.tile, .hscroll__item, .figure-wide');
+    if (!host || t.closest('.compare')) return;
+    var img = host.querySelector('img');
+    if (!img) return;
+    ev.preventDefault();
+    openLightbox(img);
+  });
+  document.addEventListener('keydown', function(ev){
+    if (ev.key === 'Escape' && lightbox && lightbox.classList.contains('is-open')) closeLightbox();
+  });
 
   /* ---- Intro curtain ---------------------------------------------------
      Injected by JS, so a page without JS never sees it. Dismissed on load

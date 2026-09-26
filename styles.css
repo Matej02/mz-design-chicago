@@ -606,6 +606,9 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 .footer-bottom > span:first-child a{ color:inherit; text-decoration:underline; text-underline-offset:2px; text-decoration-color: rgba(243,236,221,.35); }
 .footer-bottom > span:first-child a:hover{ color:#fff; text-decoration-color:currentColor; }
 .footer-legal{ display:block; max-width:46rem; font-size: var(--fs-label); color: rgba(243,236,221,.42); line-height:1.7; }
+.footer-credit{ display:block; margin-top: var(--sp-3); font-size: var(--fs-label); color: rgba(243,236,221,.38);
+  text-decoration:underline; text-underline-offset:2px; text-decoration-color: rgba(243,236,221,.25); }
+.footer-credit:hover{ color: rgba(243,236,221,.75); text-decoration-color:currentColor; }
 
 /* ---------- Reveal on scroll ----------
    Visible by default; the hidden state only exists once JS proves it can
@@ -727,6 +730,23 @@ body.body-noir{ background: var(--noir); }
 .cursor.is-media .cursor__label{ opacity:1; }
 .cursor.is-link .cursor__ring{ width:62px; height:62px; }
 .js-anim.has-cursor, .js-anim.has-cursor a, .js-anim.has-cursor button{ cursor:none; }
+
+/* ---- Photo lightbox ---- */
+html.lightbox-open{ overflow:hidden; }
+.tile, .hscroll__item, .figure-wide{ cursor: zoom-in; }
+.lightbox{ position:fixed; inset:0; z-index:900; background:rgba(15,11,7,.94);
+  display:flex; align-items:center; justify-content:center; padding: var(--sp-6);
+  opacity:0; visibility:hidden; transition: opacity .3s var(--ease); }
+.lightbox.is-open{ opacity:1; visibility:visible; }
+.lightbox__img{ max-width:92vw; max-height:92vh; width:auto; height:auto;
+  object-fit:contain; border-radius: var(--radius-sm); box-shadow:0 20px 60px rgba(0,0,0,.5); }
+.lightbox__close{ position:absolute; top: var(--sp-5); right: var(--sp-5);
+  width:44px; height:44px; border-radius:50%; border:1px solid rgba(243,236,221,.35);
+  background:rgba(243,236,221,.08); color:#F3ECDD; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition: background .3s var(--ease), border-color .3s var(--ease); }
+.lightbox__close:hover{ background:rgba(243,236,221,.16); border-color:rgba(243,236,221,.6); }
+@media (prefers-reduced-motion: reduce){ .lightbox{ transition:none; } }
+.js-anim.has-cursor .lightbox{ cursor:auto; }
 
 /* ---- Horizontal scroll gallery ----
    The header sits in normal flow at the top of a column; the track fills
