@@ -453,6 +453,7 @@ h2 + p, h3 + p{ margin-top: var(--sp-3); }
 .compare-item + .compare-item{ margin-top: var(--sp-8); }
 .compare-item h3{ font-size: var(--fs-h3); margin-bottom: var(--sp-4); }
 .compare-item p{ color: var(--espresso-soft); max-width: var(--measure); margin-bottom: var(--sp-4); }
+.compare-item .compare{ max-width: 800px; }
 
 /* ---------- Occasions ---------- */
 .occasion-list{ display:flex; flex-wrap:wrap; gap: var(--sp-3); }
